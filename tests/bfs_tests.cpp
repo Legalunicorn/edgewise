@@ -8,8 +8,10 @@ TEST(BFS, DisconnectedVertices) {
     g.add_edge(0,1);
     g.add_edge(1,0);
     const std::vector<int> expected({0,1,-1});
-    const auto result = g.bfs_sequential(0);
-    EXPECT_EQ(expected, result);
+    EXPECT_EQ(expected, g.bfs_sequential(0));
+    EXPECT_EQ(expected, g.bfs_parallel(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel(0,3));
 }
 
 TEST(BFS, DiamondGraph){
@@ -21,6 +23,9 @@ TEST(BFS, DiamondGraph){
     const std::vector<int> expected({0,1,1,2});
     const auto result = g.bfs_sequential(0);
     EXPECT_EQ(expected, result);
+    EXPECT_EQ(expected, g.bfs_parallel(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel(0,3));
 }
 
 TEST(BFS, Cycle) {
@@ -32,6 +37,9 @@ TEST(BFS, Cycle) {
     const std::vector<int> expected({0,1,2,3});
     const auto result = g.bfs_sequential(0);
     EXPECT_EQ(expected, result);
+    EXPECT_EQ(expected, g.bfs_parallel(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel(0,3));
 }
 
 // int main() {
