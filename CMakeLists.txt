@@ -27,3 +27,13 @@ target_link_libraries(bfs_test PRIVATE GTest::gtest_main) # Supply GoogleTest an
 include(GoogleTest) # Load CMake's GoogleTest integration.
 gtest_discover_tests(bfs_test) # Register each named case with CTest.
 
+
+# Build the benchmark as a separate program with its own main().
+add_executable(bfs_bench
+    benchmarks/bfs_bench.cpp # Timing, correctness comparisons, and CSV output.
+    benchmarks/generate_graph.cpp # Compile the generator implementations too.
+)
+target_compile_features(bfs_bench PRIVATE cxx_std_20) # std::jthread requires C++20.
+target_include_directories(bfs_bench PRIVATE src) # Locate the existing graph.hpp.
+find_package(Threads REQUIRED) # Find this platform's C++ threading requirements.
+target_link_libraries(bfs_bench PRIVATE Threads::Threads) # Apply those requirements to the benchmark.
