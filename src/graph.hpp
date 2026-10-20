@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 #include <thread>
-#include <mutex>
 #include <cstddef>
+#include <atomic>
 
 // represents a graph 
 // responsibile for all graph functions
@@ -62,13 +62,13 @@ struct Graph{
     // there is still heavy sequentual bottle neck when visiting neighbours
     std::vector<int> bfs_parallel(int s, std::size_t worker_count) const {
         // local discovery state shared among worker threads
-        std::vector<int> distance(adj_list.size(), -1);
-        distance[s] = 0; 
+        // std::vector<int> distance(adj_list.size(), -1);
+        std::vector<std::atomic<int>> distance(size);
+        for (auto& d: distance) d.store(-1);
+        distance[s].store(0);
         // current bfs layer (frontier)
         std::vector<int> curr({s});
         int curr_depth = 0;
-        // single shared mutex accorss workers
-        std::mutex discovery_mutex;
         while(!curr.empty()){ // process the frontier
             // each worker outputs to its own vector
             std::vector<std::vector<int>> eval(worker_count);
@@ -79,18 +79,10 @@ struct Graph{
                 for (std::size_t i = start; i < end; i++){
                     const int u = curr[i];
                     for (int v: adj_list[u]){
-                        // discovery, to ensure only 1 worker can own the current "v"
-                        bool discovered = false;
-                        // create block for the lock guard, with auto destruction when the block ends
-                        {
-                            std::lock_guard<std::mutex> guard(discovery_mutex);
-                            if (distance[v] == -1){
-                                distance[v] = curr_depth + 1;
-                                // this work has found discovery, it "owned" this discovered
-                                discovered = true;
-                            }
+                        int expected = -1;
+                        if (distance[v].compare_exchange_strong(expected, curr_depth + 1)){
+                            out.push_back(v);
                         }
-                        if (discovered) out.push_back(v);
                     }
                 }
             };
@@ -98,7 +90,7 @@ struct Graph{
             std::vector<std::jthread> workers;
             for (std::size_t id = 0; id < worker_count; id++){
                 // consider abstracting this logic
-                // total work / worker count * (id)  --> totka work 
+                // total work / worker count * (id)  --> total work 
                 const std::size_t begin = curr.size() * id / worker_count;
                 const std::size_t end = curr.size() * (id+1) / worker_count;
 
@@ -116,6 +108,10 @@ struct Graph{
             curr.swap(next);
             curr_depth++;
         }
-        return distance;
+        std::vector<int> res(size);
+        for(std::size_t i = 0; i < size; i++){
+            res[i] = distance[i].load();
+        }
+        return res;
     }
 };
