@@ -12,6 +12,9 @@ TEST(BFS, DisconnectedVertices) {
     EXPECT_EQ(expected, g.bfs_parallel(0,1));
     EXPECT_EQ(expected, g.bfs_parallel(0,2));
     EXPECT_EQ(expected, g.bfs_parallel(0,3));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,3));
 }
 
 TEST(BFS, DiamondGraph){
@@ -26,6 +29,9 @@ TEST(BFS, DiamondGraph){
     EXPECT_EQ(expected, g.bfs_parallel(0,1));
     EXPECT_EQ(expected, g.bfs_parallel(0,2));
     EXPECT_EQ(expected, g.bfs_parallel(0,3));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,3));
 }
 
 TEST(BFS, Cycle) {
@@ -40,6 +46,9 @@ TEST(BFS, Cycle) {
     EXPECT_EQ(expected, g.bfs_parallel(0,1));
     EXPECT_EQ(expected, g.bfs_parallel(0,2));
     EXPECT_EQ(expected, g.bfs_parallel(0,3));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,1));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,2));
+    EXPECT_EQ(expected, g.bfs_parallel_v3(0,3));
 }
 
 // int main() {
