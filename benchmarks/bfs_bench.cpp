@@ -1,6 +1,5 @@
 #include "generate_graph.hpp"
 #include <chrono>
-#include <initializer_list>
 #include <iostream>
 
 int main() {
@@ -14,7 +13,7 @@ int main() {
         const auto seq_end = std::chrono::steady_clock::now();
         const std::chrono::duration<double, std::milli> seq_time = seq_end - seq_start;
         std::cout << "sequential,1," << run << "," << seq_time.count() << "\n";
-        for (auto w: {1,2,4}) {
+        for (std::size_t w = 1; w <= 16; w++) {
             const auto start = std::chrono::steady_clock::now();
             auto result = g.bfs_parallel(0, w);
             const auto end = std::chrono::steady_clock::now();
