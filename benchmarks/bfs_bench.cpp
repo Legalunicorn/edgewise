@@ -15,7 +15,12 @@ int main() {
         std::cout << "sequential,1," << run << "," << seq_time.count() << "\n";
         for (std::size_t w = 1; w <= 16; w++) {
             const auto start = std::chrono::steady_clock::now();
-            auto result = g.bfs_parallel(0, w);
+
+            // auto result = g.bfs_parallel(0, w);
+            
+            // benchmark for bfs_parallel_v3
+            auto result = g.bfs_parallel_v3(0, w);
+
             const auto end = std::chrono::steady_clock::now();
             const std::chrono::duration<double, std::milli> parallel_time = end - start;
             if (result != expected){
