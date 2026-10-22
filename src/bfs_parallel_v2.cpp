@@ -1,4 +1,5 @@
 #include "graph.hpp"
+#include <atomic>
 #include <thread>
 
 // V2 - Atomic
@@ -20,7 +21,7 @@ std::vector<int> Graph::bfs_parallel_v2(int s, std::size_t worker_count) const {
             auto& out = eval[id];
             for (std::size_t i = start; i < end; i++){
                 const int u = curr[i];
-                for (int v: adj_list[u]){
+                for (int v: neighbours(u)){
                     int expected = -1;
                     if (distance[v].compare_exchange_strong(expected, curr_depth + 1)){
                         out.push_back(v);

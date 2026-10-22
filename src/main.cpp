@@ -17,7 +17,9 @@ int main(){
         g.add_edge(u, v);
         g.add_edge(v, u);
     }
+    g.build_csr();
     auto bfs = g.bfs_sequential(0);
+
     for (auto& v: bfs) {
         std::cout << v << " ";
     }

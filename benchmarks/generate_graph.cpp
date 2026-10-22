@@ -12,6 +12,11 @@ namespace gen_graph{
 
 
     Graph binary_tree(std::size_t n){
+        Graph g = binary_tree_helper(n);
+        g.build_csr();
+        return g;
+    }
+    Graph binary_tree_helper(std::size_t n){
         check_valid_graph_size(n);
         Graph g(n);
         // 0 -> 1,2 
@@ -29,14 +34,18 @@ namespace gen_graph{
     }
 
 
+    Graph random_connected(std::size_t n, std::size_t m, std::uint32_t seed) {
+        Graph g = random_connected_helper(n, m, seed);
+        g.build_csr();
+        return g;
+    }
     // 1. construct a random spanning tree using n-1 edges
-    //
-    Graph random_connected(std::size_t n, std::size_t m, std::uint32_t seed){
+    Graph random_connected_helper(std::size_t n, std::size_t m, std::uint32_t seed){
         check_valid_graph_size(n);
         // max edges is n choose 2 (undirected edges)
         const auto max_edges = static_cast<std::uint64_t>(n*(n-1)/2);
         if (m < n-1 || m > max_edges ) throw std::invalid_argument("Invalid edge count. n-1 <= m <= n choose 2");
-        Graph g = binary_tree(n);
+        Graph g = binary_tree_helper(n);
         std::size_t total_edges = n-1;
         std::mt19937 rng(seed);
         std::uniform_int_distribution<int> pick(0, n-1);

@@ -10,7 +10,7 @@
 // there is still heavy sequentual bottle neck when visiting neighbours
 // local discovery state shared among worker threads
 std::vector<int> Graph::bfs_parallel_v1(int s, std::size_t worker_count) const {
-    std::vector<int> distance(adj_list.size(), -1);
+    std::vector<int> distance(size, -1);
     distance[s] = 0;
     // current bfs layer (frontier)
     std::vector<int> curr({s});
@@ -26,7 +26,7 @@ std::vector<int> Graph::bfs_parallel_v1(int s, std::size_t worker_count) const {
             auto& out = eval[id];
             for (std::size_t i = start; i < end; i++){
                 const int u = curr[i];
-                for (int v: adj_list[u]){
+                for (int v: neighbours(u)){
                     // discovery, to ensure only 1 worker can own the current "v"
                     bool discovered = false;
                     // create block for the lock guard, with auto destruction when the block ends

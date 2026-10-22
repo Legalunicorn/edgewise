@@ -1,8 +1,12 @@
 #include "graph.hpp"
+#include <queue>
+#include <stdexcept>
+
+
 std::vector<int> Graph::bfs_sequential(int s) const{
     std::vector<int> distance(size, -1);
     if (s < 0 || s >= size) {
-        std::cerr << "Source s must be >= 0 and < Size of graph";
+        throw std::logic_error("Source s must be >= 0 and < Size of graph");
         return distance;
     }
 
@@ -16,7 +20,7 @@ std::vector<int> Graph::bfs_sequential(int s) const{
         for (size_t i = 0; i < len; i++){
             int u = frontier.front();
             frontier.pop();
-            for (auto& v: adj_list[u]){
+            for (auto& v: neighbours(u)){
                 if (distance[v] != -1) continue;
                 frontier.push(v);
                 distance[v] = curr_dist;
