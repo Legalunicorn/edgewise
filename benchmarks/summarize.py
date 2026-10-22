@@ -4,32 +4,42 @@ from collections import defaultdict
 from statistics import median
 
 
-# this file is to generate simple statistics from the raw benchmark csv
-
 if len(sys.argv) != 2:
     raise SystemExit("Usage: python3 benchmarks/summarize.py <results.csv>")
 
-samples = defaultdict(list)  # Collect timings for each configuration.
+graphs = defaultdict(lambda: defaultdict(list))  # Keep graph sizes and seeds separate.
 
 with open(sys.argv[1], newline="", encoding="utf-8-sig") as file:
     for row in csv.DictReader(file):
+        graph = (
+            (int(row["vertices"]), int(row["edges"]), int(row["seed"]))
+            if "vertices" in row else None  # Also support the older single-graph CSVs.
+        )
         key = (row["implementation"], int(row["workers"]))
-        samples[key].append(float(row["time_ms"]))
+        graphs[graph][key].append(float(row["time_ms"]))
 
-baseline = median(samples[("sequential", 1)])  # Sequential reference time.
+if not graphs:
+    raise SystemExit("No benchmark measurements found in the CSV.")
 
-print(f"Sequential: {baseline:.2f} ms")
+for index, (graph, samples) in enumerate(graphs.items()):
+    if index:
+        print()  # Separate the compact summaries with one blank line.
+    if graph is not None:
+        n, m, seed = graph
+        print(f"Graph: {n:,} vertices, {m:,} edges, seed={seed}")
 
-# Show the fastest median across tested worker counts, not the fastest single run.
-for implementation, label in (
-    ("mutex_v1", "V1 mutex"),
-    ("atomic_v2", "V2 atomic"),
-    ("persistent_v3", "V3 persistent"),
-):
-    configurations = [
-        (median(times), workers)
-        for (name, workers), times in samples.items()
-        if name == implementation
-    ]
-    elapsed, workers = min(configurations)  # Choose the lowest median time.
-    print(f"{label}: {elapsed:.2f} ms, workers={workers}, {baseline / elapsed:.2f}x speedup")
+    baseline = median(samples[("sequential", 1)])  # Use this graph's own baseline.
+    print(f"Sequential: {baseline:.2f} ms")
+
+    for implementation, label in (
+        ("mutex_v1", "V1 mutex"),
+        ("atomic_v2", "V2 atomic"),
+        ("persistent_v3", "V3 persistent"),
+    ):
+        configurations = [
+            (median(times), workers)
+            for (name, workers), times in samples.items()
+            if name == implementation
+        ]
+        elapsed, workers = min(configurations)  # Lowest median, not fastest individual run.
+        print(f"{label}: {elapsed:.2f} ms, workers={workers}, {baseline / elapsed:.2f}x speedup")
