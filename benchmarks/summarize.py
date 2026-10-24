@@ -35,11 +35,14 @@ for index, (graph, samples) in enumerate(graphs.items()):
         ("mutex_v1", "V1 mutex"),
         ("atomic_v2", "V2 atomic"),
         ("persistent_v3", "V3 persistent"),
+        ("assembly_v4", "V4 parallel assembly"),
     ):
         configurations = [
             (median(times), workers)
             for (name, workers), times in samples.items()
             if name == implementation
         ]
+        if not configurations:  # Older CSVs may not contain every implementation.
+            continue
         elapsed, workers = min(configurations)  # Lowest median, not fastest individual run.
         print(f"{label}: {elapsed:.2f} ms, workers={workers}, {baseline / elapsed:.2f}x speedup")
