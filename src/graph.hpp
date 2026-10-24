@@ -59,6 +59,9 @@ struct Graph{
     // V3: persistent workers
     std::vector<int> bfs_parallel_v3(int s, std::size_t worker_count) const ;
 
+    // V4: parallel assembly
+    std::vector<int> bfs_parallel_v4(int s, std::size_t worker_count) const;
+
 private:
     std::vector<std::size_t> offsets_;
     std::vector<int> flat_neigbours_;

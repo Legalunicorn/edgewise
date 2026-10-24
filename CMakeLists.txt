@@ -19,6 +19,7 @@ add_library(edgewise_graph STATIC
     src/bfs_parallel_v1.cpp
     src/bfs_parallel_v2.cpp
     src/bfs_parallel_v3.cpp
+    src/bfs_parallel_v4.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
 target_include_directories(edgewise_graph PUBLIC src) # Expose graph.hpp to consumers.
