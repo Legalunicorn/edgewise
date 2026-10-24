@@ -69,4 +69,4 @@ V3 remains the preferred implementation: V4's parallel frontier assembly was slo
 - Complete BFS calls are timed, including initialization and worker setup. Graph construction, result checking, and CSV output are excluded.
 - Every traversal is checked against the sequential reference.
 
-[Raw results for all implementations](bfs_comparison_v1-v4_last.csv).
+[Raw results for all implementations](benchmarks/results/bfs/bfs_comparison_v1-v4_last.csv)
