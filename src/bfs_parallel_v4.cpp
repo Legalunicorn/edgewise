@@ -23,8 +23,19 @@ std::vector<int> Graph::bfs_parallel_v4(int s, std::size_t worker_count) const {
 
     // main thread + workers
     const auto total_active = static_cast<ptrdiff_t>(worker_count +1);
+
+    // prepare the next frontier
+    auto prep_next = [&]()  noexcept {
+        for (std::size_t i =1; i <= worker_count; i++) copy_offsets_[i] += copy_offsets_[i-1];
+        const std::size_t next_count = copy_offsets_.back();
+        if (next.size() < next_count) next.resize(next_count);
+
+    };
+
+
     std::barrier<> start_round(total_active);
-    std::barrier<> end_round(total_active);
+    std::barrier scan_done  (total_active, prep_next);
+    std::barrier<> copy_finish(total_active);
     std::vector<std::jthread> workers;
 
 
@@ -62,16 +73,16 @@ std::vector<int> Graph::bfs_parallel_v4(int s, std::size_t worker_count) const {
             // contribute offset size
             copy_offsets_[id+1] = outputs[id].size();
             // worker waits and the end barrier
-            end_round.arrive_and_wait();
+            scan_done.arrive_and_wait();
 
-            // ## ROUND 2: write to next
-            start_round.arrive_and_wait();
+            // ## ROUND 2: write to next BUG: remove
+            // start_round.arrive_and_wait();
             const std::size_t dest = copy_offsets_[id];
             std::copy(out.begin(), out.end(), next.begin() + dest);
             // for (std::size_t i = 0; i < out.size(); i++){
             //     next[dest + i] = out[i];
             // }
-            end_round.arrive_and_wait();
+            copy_finish.arrive_and_wait();
         }
     };
 
@@ -83,23 +94,29 @@ std::vector<int> Graph::bfs_parallel_v4(int s, std::size_t worker_count) const {
     // main thread: coordinator
     // current bfs layer (frontier)
     while(curr_count != 0){ // process the frontier
-        // #### Start round 1
         start_round.arrive_and_wait();
-        end_round.arrive_and_wait();
-
-        // buffer between end round 1, and start of round 2
-        // precompute the prefix sum first, while all worker thread swait to start round 2
-        for (std::size_t i = 1; i <= worker_count; i++) copy_offsets_[i] += copy_offsets_[i-1];
-        const std::size_t next_count = copy_offsets_.back();
-        curr_count = next_count;
-        if (next.size() < next_count) next.resize(copy_offsets_.back()); // grow when necesary
-        
-        // #### Start round 2
-        start_round.arrive_and_wait(); // all workers do their copying
-        end_round.arrive_and_wait();  // coordinator close the second round 
-
+        scan_done.arrive_and_wait();
+        copy_finish.arrive_and_wait();
         curr.swap(next);
+        curr_count = copy_offsets_.back();
         curr_depth++;
+        // // #### Start round 1
+        // start_round.arrive_and_wait();
+        // end_round.arrive_and_wait();
+        //
+        // // buffer between end round 1, and start of round 2
+        // // precompute the prefix sum first, while all worker thread swait to start round 2
+        // for (std::size_t i = 1; i <= worker_count; i++) copy_offsets_[i] += copy_offsets_[i-1];
+        // const std::size_t next_count = copy_offsets_.back();
+        // curr_count = next_count;
+        // if (next.size() < next_count) next.resize(copy_offsets_.back()); // grow when necesary
+        //
+        // // #### Start round 2
+        // start_round.arrive_and_wait(); // all workers do their copying
+        // end_round.arrive_and_wait();  // coordinator close the second round 
+        //
+        // curr.swap(next);
+        // curr_depth++;
     }
     // completed, break all workers out the loop
     done = true;
