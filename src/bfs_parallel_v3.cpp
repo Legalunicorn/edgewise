@@ -52,6 +52,7 @@ std::vector<int> Graph::bfs_parallel_v3(int s, std::size_t worker_count) const {
             const std::size_t begin = curr.size() * id / worker_count;
             const std::size_t end = curr.size() * (id+1) / worker_count;
             scan(begin, end, id);
+
             end_round.arrive_and_wait();
         }
     };

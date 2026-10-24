@@ -41,6 +41,7 @@ int benchmark_graph(std::size_t n, std::size_t m, std::uint32_t seed){
             if (!benchmark_bfs("mutex_v1", w, run, expected, [&] { return g.bfs_parallel_v1(0, w); }, n, m, seed)) return 1;
             if (!benchmark_bfs("atomic_v2", w, run, expected, [&] { return g.bfs_parallel_v2(0, w); }, n, m, seed)) return 1;
             if (!benchmark_bfs("persistent_v3", w, run, expected, [&] { return g.bfs_parallel_v3(0, w); }, n, m, seed)) return 1;
+            if (!benchmark_bfs("assembly_v4", w, run, expected, [&] { return g.bfs_parallel_v4(0, w); }, n, m, seed)) return 1; // Parallel frontier assembly.
         }
     }
     return 0; // All traversals matched the reference.
