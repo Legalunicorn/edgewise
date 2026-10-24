@@ -6,6 +6,10 @@ export default defineConfig({
   base: '/edgewise/', // Repository path for eventual GitHub Pages hosting.
 
   themeConfig: {
+    search: {
+      provider: 'local' // Enable browser-based fuzzy full-text search.
+    },
+    outline: [2, 3], // Include second- and third-level headings in page navigation.
     sidebar: [
       {
         text: 'Project', // General project documentation.
