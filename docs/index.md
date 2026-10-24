@@ -1,3 +1,4 @@
+
 # Edgewise
 
 Edgewise is a personal project exploring parallel graph algorithms in C++20. It compares sequential and parallel implementations, examining how synchronization, graph storage and work distribution affect performance.
@@ -7,9 +8,9 @@ So far, I’ve implemented sequential and parallel breadth-first search (BFS). I
 
 ## BFS results
 
-I wrote my parallel BFS in versions, each introducing a new possible optimization. Details of which are discussed in [the bfs section](/bfs/implementations). 
+I wrote my parallel BFS in versions, each introducing a new possible optimization. Details of which are discussed in [the BFS tutorials](/bfs/v1-mutex).
 
-A brief summery of the parallel versions implemented:
+A brief summary of the parallel versions implemented:
 - V1: protect vertex discovery with a shared mutex.
 - V2: replace discovery mutex with atomic compare-and-swap.
 - V3: reuse worker threads across all BFS layers.
@@ -44,7 +45,7 @@ A brief summery of the parallel versions implemented:
 ::: info Table notes
 - **Sequential:** single-threaded BFS using CSR storage.
 - **Parallel**: Version 3 of my parallel implementation, which currently performs the best.
-- Graphs is undirected, connected, and generated from a binary-tree backbone, with random extra edges using a random seed 67.
+- Graphs are undirected, connected, and generated from a binary-tree backbone, with random extra edges using a random seed 67.
 - Measurements use a Release build on an 8-core, 16-logical-processor laptop.
 :::
 
@@ -52,7 +53,7 @@ Times are medians of five measured repetitions after warm-up. For each graph, th
 
 ## Explore
 
-- [Sequential BFS](/bfs/): the algorithm, returned distances and frontier structure.
-- [Parallel BFS](/bfs/implementations): the purpose and tradeoffs of each implementation.
+- [Sequential BFS](/bfs/sequential): the algorithm, returned distances and frontier structure.
+- [Parallel BFS](/bfs/v1-mutex): the purpose and tradeoffs of each implementation.
 - [Graph storage](/graph-storage): the shared CSR representation.
 - [Getting started](/getting-started): build, test and run the project.

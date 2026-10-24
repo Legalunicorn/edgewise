@@ -4,7 +4,7 @@ Shared-memory graph analytics in C++20, currently comparing sequential and paral
 
 BFS implementations cover mutex discovery (V1), atomic discovery (V2), persistent workers (V3), and parallel frontier assembly (V4). Correctness tests use GoogleTest.
 
-[Documentation](https://legalunicorn.github.io/edgewise/) · [Parallel BFS](https://legalunicorn.github.io/edgewise/bfs/implementations)
+[Documentation](https://legalunicorn.github.io/edgewise/) · [Parallel BFS](https://legalunicorn.github.io/edgewise/bfs/v1-mutex)
 
 ## Build and test
 
