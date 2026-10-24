@@ -1,0 +1,62 @@
+name: Deploy docs
+
+on:
+  push:
+    #Rebuild after every push or pr merge to main
+    branches: [main] 
+  workflow_dispatch: 
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7 # Download the committed source
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm 
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: docs
+
+      - name: Build documentation
+        run: npm run build
+        working-directory: docs
+
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages # Use GitHub's Pages deployment environment.
+      url: ${{ steps.deployment.outputs.page_url }} # Display the deployed URL.
+
+    steps:
+      - name: Deploy website
+        id: deployment 
+        uses: actions/deploy-pages@v4 # Publish the uploaded website.
