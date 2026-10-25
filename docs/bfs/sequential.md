@@ -1,11 +1,10 @@
 # Sequential BFS
 
-I used sequential BFS as the correctness and performance baseline for the parallel implementations.
+Sequential BFS is the correctness and performance baseline for the parallel versions.
 
-It traverses the same graph and returns a distance vector, with `-1` for unreachable vertices.
-
+Each comparison uses the same graph across implementations. Each implementation returns a distance vector, where `distance[i]` is the distance from the source to zero-based vertex `i`, or `-1` if unreachable.
 ## Implementation
-The following implementation uses a standard BFS queue.
+The following is a standard implementation that uses a queue.
 
 ```cpp
 // Defines the Graph method declared in graph.hpp.
@@ -33,7 +32,7 @@ std::vector<int> Graph::bfs_sequential(int s) const{
     return distance;
 };
 ```
-:::info
+:::info Notes
 - `distance[i]` returns the distance from the source `s`, which would be `-1` if unreachable.
 - `frontier` is the BFS queue. At the start of each outer loop iteration, it contains one distance layer. During that iteration, it can contain the remaining current-layer vertices and newly discovered next-layer vertices.
 - `Graph` is a custom struct that provides a basic graph API such as `neighbours(u)` which returns a span containing the vertices `u` points to.
