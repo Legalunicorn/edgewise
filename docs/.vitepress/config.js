@@ -14,6 +14,13 @@ export default defineConfig({
     },
 
     themeConfig: {
+        socialLinks: [
+            {
+                icon: 'github', // Repository link in the page header.
+                link: 'https://github.com/Legalunicorn/edgewise',
+                ariaLabel: 'Edgewise on GitHub'
+            }
+        ],
         search: {
             provider: 'local' // Enable browser-based fuzzy full-text search.
         },
