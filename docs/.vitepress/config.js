@@ -47,6 +47,18 @@ export default defineConfig({
                 ]
             },
             {
+                text: 'PageRank',
+                items: [
+                    { text: 'Introduction', link: '/pagerank/' }
+                ]
+            },
+            {
+                text: 'SCC',
+                items: [
+                    { text: 'Introduction', link: '/scc/' }
+                ]
+            },
+            {
                 text: 'Benchmarks', // Measurement method and results.
                 items: [
                     { text: 'Methodology', link: '/benchmarks/methodology' },
