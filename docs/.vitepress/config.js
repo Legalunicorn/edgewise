@@ -12,6 +12,9 @@ export default defineConfig({
             },
         },
     },
+    markdown: {
+        math: true,
+    },
 
     themeConfig: {
         socialLinks: [
@@ -31,7 +34,7 @@ export default defineConfig({
                 items: [
                     { text: 'Overview', link: '/' },
                     { text: 'Getting started', link: '/getting-started' },
-                    { text: 'Graph storage', link: '/graph-storage' }
+                    { text: 'Graph storage', link: '/graph-storage.md' }
                 ]
             },
             {
@@ -39,23 +42,32 @@ export default defineConfig({
                 items: [
                     { text: 'Introduction', link: '/bfs/' },
                     { text: 'Sequential BFS', link: '/bfs/sequential' },
-                    { text: 'V1: Mutex discovery', link: '/bfs/v1-mutex' },
-                    { text: 'V2: Atomic discovery', link: '/bfs/v2-atomic' },
-                    { text: 'V3: Persistent workers', link: '/bfs/v3-persistent-workers' },
-                    { text: 'V4: Parallel frontier assembly', link: '/bfs/v4-parallel-frontier-assembly' },
+                    {
+                        text: 'Parallel BFS',
+                        collapsed: false, // Keep the versions visible initially.
+                        items: [
+                            { text: 'V1: Mutex discovery', link: '/bfs/v1-mutex' },
+                            { text: 'V2: Atomic discovery', link: '/bfs/v2-atomic' },
+                            { text: 'V3: Persistent workers', link: '/bfs/v3-persistent-workers' },
+                            { text: 'V4: Parallel frontier assembly', link: '/bfs/v4-parallel-frontier-assembly' }
+                        ]
+                    },
                     { text: 'Results', link: '/benchmarks/results' }
                 ]
             },
             {
                 text: 'PageRank',
                 items: [
-                    { text: 'Introduction', link: '/pagerank/' }
+                    { text: 'Introduction', link: '/pagerank/' },
+                    { text: 'Sequential PageRank', link: '/pagerank/sequential' },
+                    { text: 'Parallel PageRank', link: '/pagerank/parallel' },
+                    { text: 'Results', link: '/pagerank/results' }
                 ]
             },
             {
-                text: 'SCC',
+                text: 'CC',
                 items: [
-                    { text: 'Introduction', link: '/scc/' }
+                    { text: 'Introduction', link: '/cc/' }
                 ]
             },
             {

@@ -1,41 +1,47 @@
-::: warning Under construction
-This page is under construction.
-:::
-
 # Graph storage
 
 ## The Graph type
 
 `graph.hpp` defines the `Graph` struct used throughout the project.
 
-Its public API is listed below. BFS methods are declared here, with their implementations in separate `.cpp` files. 
+Its public API is listed below. Algorithm methods are declared here, with their implementations in separate `.cpp` files. 
 
 The graph uses Compressed Sparse Row (CSR) storage, which is elaborated below.
 
 
 ### API
 
-::: info Note 
-`std::` is omitted from the table for readability.
-::: 
+::: info Note
+`std::` is omitted for readability. Algorithm methods below use shortened signatures.
+:::
+
+#### Graph methods
 
 | Method / constructor | Description |
 |---|---|
-| `explicit Graph(size_t n)` | Create a graph with vertices `0` to `n - 1`. |
-| `void add_edge(int u, int v)` | Add the directed edge `u -> v` before finalization. |
-| `void build_csr()` | Convert the construction adjacency list to CSR and release it. Later calls do nothing. |
-| `span<const int> neighbours(int u) const` | Return a read-only view of `u`'s neighbours after finalization, without copying. |
-| `vector<int> bfs_sequential(int s) const` | Run sequential BFS from source `s`. |
-| `vector<int> bfs_parallel_v1(int s, size_t worker_count) const` | Run parallel BFS with a shared discovery mutex. |
-| `vector<int> bfs_parallel_v2(int s, size_t worker_count) const` | Run parallel BFS with atomic discovery. |
-| `vector<int> bfs_parallel_v3(int s, size_t worker_count) const` | Run parallel BFS with persistent workers. |
-| `vector<int> bfs_parallel_v4(int s, size_t worker_count) const` | Run parallel BFS with persistent workers and parallel frontier assembly. |
+| `explicit Graph(size_t n)` | Create vertices `0` to `n - 1`. |
+| `void add_edge(int u, int v)` | Add `u -> v` before finalization. |
+| `void build_csr()` | Build outgoing and incoming CSR, then release both adjacency lists. Later calls do nothing. |
+| `span<const int> neighbours(int u) const` | Read outgoing neighbours without copying. |
+| `span<const int> incoming_neighbours(int u) const` | Read incoming neighbours without copying. |
+| `size_t outdegree(int u) const` | Count outgoing edges. |
+| `size_t indegree(int u) const` | Count incoming edges. |
 
-- All BFS methods return distances from `s`, with `-1` for unreachable vertices.
-- `worker_count` is the number of worker threads to create.
+Call `build_csr()` before reading neighbours or degrees. Vertex IDs are zero-based integers.
 
-- All BFS implementations use the same `Graph` type with CSR storage.
-- Vertex IDs are zero-based integers.
+#### Algorithm methods
+
+| Method | Description |
+|---|---|
+| `bfs_sequential(s)` | Sequential BFS. |
+| `bfs_parallel_v1(s, worker_count)` | BFS with mutex-protected discovery. |
+| `bfs_parallel_v2(s, worker_count)` | BFS with atomic discovery. |
+| `bfs_parallel_v3(s, worker_count)` | BFS with persistent workers. |
+| `bfs_parallel_v4(s, worker_count)` | BFS with parallel frontier assembly. |
+| `pagerank_sequential(damping, tolerance, max_iterations)` | Sequential PageRank. |
+| `pagerank_parallel(worker_count, damping, tolerance, max_iterations)` | PageRank with persistent workers. |
+
+BFS returns a `vector<int>` of distances from `s`, with `-1` for unreachable vertices. PageRank returns a `vector<double>` of scores. `worker_count` is the number of worker threads.
 
 ## Why CSR?
 Initially,  I used an adjacency list `vector<vector<int>>` to represent the graph. This is easy to build, and a common representation commonly used in competitive programming. 
