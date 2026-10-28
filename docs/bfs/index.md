@@ -4,7 +4,7 @@ Breadth-first search (BFS) finds the shortest path distances from a source verte
 
 In this project, each implementation here returns a distance vector, with `-1` for unreachable vertices.
 
-I started with a simple sequential implementation, then made parallel iterations, each attempting to improve the previous version. All of them traverse the same [CSR graph storage](/graph-storage) and compute the same distances.
+I started with a simple sequential implementation, then made parallel iterations, each attempting to improve the previous version. All of them traverse the same [CSR graph storage](/graph-storage.md) and compute the same distances.
 
 
 ## Frontier

@@ -55,5 +55,5 @@ Times are medians of five measured repetitions after warm-up. For each graph, th
 
 - [Sequential BFS](/bfs/sequential): the algorithm, returned distances and frontier structure.
 - [Parallel BFS](/bfs/v1-mutex): the purpose and tradeoffs of each implementation.
-- [Graph storage](/graph-storage): the shared CSR representation.
+- [Graph storage](/graph-storage.md): the shared CSR representation.
 - [Getting started](/getting-started): build, test and run the project.

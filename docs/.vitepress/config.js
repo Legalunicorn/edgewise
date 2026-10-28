@@ -34,7 +34,7 @@ export default defineConfig({
                 items: [
                     { text: 'Overview', link: '/' },
                     { text: 'Getting started', link: '/getting-started' },
-                    { text: 'Graph storage', link: '/graph-storage' }
+                    { text: 'Graph storage', link: '/graph-storage.md' }
                 ]
             },
             {
@@ -52,7 +52,9 @@ export default defineConfig({
             {
                 text: 'PageRank',
                 items: [
-                    { text: 'Introduction', link: '/pagerank/' }
+                    { text: 'Introduction', link: '/pagerank/' },
+                    { text: 'Sequential PageRank', link: '/pagerank/sequential' },
+                    { text: 'Parallel PageRank', link: '/pagerank/parallel' }
                 ]
             },
             {
