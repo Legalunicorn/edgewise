@@ -36,6 +36,7 @@ for index, (graph, samples) in enumerate(graphs.items()):
         ("atomic_v2", "V2 atomic"),
         ("persistent_v3", "V3 persistent"),
         ("assembly_v4", "V4 parallel assembly"),
+        ("pagerank_parallel", "Parallel PageRank"),
     ):
         configurations = [
             (median(times), workers)
