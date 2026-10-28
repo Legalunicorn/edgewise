@@ -21,6 +21,7 @@ add_library(edgewise_graph STATIC
     src/bfs_parallel_v3.cpp
     src/bfs_parallel_v4.cpp
     src/pagerank_sequential.cpp
+    src/pagerank_parallel.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
 target_include_directories(edgewise_graph PUBLIC src) # Expose graph.hpp to consumers.
@@ -47,3 +48,9 @@ add_executable(bfs_bench
     benchmarks/generate_graph.cpp
 )
 target_link_libraries(bfs_bench PRIVATE edgewise_graph) # Reuse graph code and its requirements.
+
+add_executable(pagerank_bench
+    benchmarks/pagerank_bench.cpp
+    benchmarks/generate_graph.cpp
+)
+target_link_libraries(pagerank_bench PRIVATE edgewise_graph)

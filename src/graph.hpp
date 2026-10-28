@@ -98,6 +98,11 @@ struct Graph{
             double tolerance = 1e-6,
             std::size_t max_iterations = 100) const;
 
+    std::vector<double> pagerank_parallel(std::size_t worker_count,
+            double damping = 0.85,
+            double tolerance = 1e-6,
+            std::size_t max_iterations = 100) const;
+
 private:
     std::vector<std::size_t> offsets_;
     std::vector<std::size_t> reverse_offsets_;
