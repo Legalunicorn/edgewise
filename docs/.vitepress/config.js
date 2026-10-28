@@ -60,7 +60,8 @@ export default defineConfig({
                 items: [
                     { text: 'Introduction', link: '/pagerank/' },
                     { text: 'Sequential PageRank', link: '/pagerank/sequential' },
-                    { text: 'Parallel PageRank', link: '/pagerank/parallel' }
+                    { text: 'Parallel PageRank', link: '/pagerank/parallel' },
+                    { text: 'Results', link: '/pagerank/results' }
                 ]
             },
             {
