@@ -13,13 +13,14 @@ FetchContent_MakeAvailable(googletest)
 
 find_package(Threads REQUIRED) # Find the platform's threading requirements.
 
-# Compile all BFS implementations once for all executable targets.
+# Compile graph algorithms once for all executable targets.
 add_library(edgewise_graph STATIC
     src/bfs_sequential.cpp
     src/bfs_parallel_v1.cpp
     src/bfs_parallel_v2.cpp
     src/bfs_parallel_v3.cpp
     src/bfs_parallel_v4.cpp
+    src/pagerank_sequential.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
 target_include_directories(edgewise_graph PUBLIC src) # Expose graph.hpp to consumers.
@@ -35,6 +36,10 @@ target_link_libraries(bfs_test PRIVATE edgewise_graph GTest::gtest_main) # Graph
 
 include(GoogleTest) # Load CMake's GoogleTest integration.
 gtest_discover_tests(bfs_test) # Register each named case with CTest.
+
+add_executable(pagerank_test tests/pagerank_tests.cpp)
+target_link_libraries(pagerank_test PRIVATE edgewise_graph GTest::gtest_main)
+gtest_discover_tests(pagerank_test)
 
 # Keep graph generation and timing in the separate benchmark program.
 add_executable(bfs_bench
