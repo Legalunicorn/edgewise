@@ -47,7 +47,7 @@ For Edgewise I choose
 ## Implementation
 
 We implement the method
-`Graph::pagerank_sequential(damping, tolerance, max_iterations)` which is declared in `graph.hpp`
+`Graph::pagerank_sequential(damping, tolerance, max_iterations)` which is declared in `graph.hpp` Refer to [graph storage](/graph-storage.md) for more details.
 
 ```cpp
 std::vector<double> Graph::pagerank_sequential(
