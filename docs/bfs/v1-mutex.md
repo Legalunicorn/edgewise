@@ -1,6 +1,3 @@
-::: warning Note to reader
-This page is currently a work in progress = )
-:::
 # Parallel BFS V1: Mutex discovery
 
 A key idea in parallel BFS is that different frontiers must be processed in sequence (1st frontier, then 2nd, then 3rd...), but work within one frontier can be done in parallel.
