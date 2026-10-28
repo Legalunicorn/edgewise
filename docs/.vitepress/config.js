@@ -42,10 +42,16 @@ export default defineConfig({
                 items: [
                     { text: 'Introduction', link: '/bfs/' },
                     { text: 'Sequential BFS', link: '/bfs/sequential' },
-                    { text: 'V1: Mutex discovery', link: '/bfs/v1-mutex' },
-                    { text: 'V2: Atomic discovery', link: '/bfs/v2-atomic' },
-                    { text: 'V3: Persistent workers', link: '/bfs/v3-persistent-workers' },
-                    { text: 'V4: Parallel frontier assembly', link: '/bfs/v4-parallel-frontier-assembly' },
+                    {
+                        text: 'Parallel BFS',
+                        collapsed: false, // Keep the versions visible initially.
+                        items: [
+                            { text: 'V1: Mutex discovery', link: '/bfs/v1-mutex' },
+                            { text: 'V2: Atomic discovery', link: '/bfs/v2-atomic' },
+                            { text: 'V3: Persistent workers', link: '/bfs/v3-persistent-workers' },
+                            { text: 'V4: Parallel frontier assembly', link: '/bfs/v4-parallel-frontier-assembly' }
+                        ]
+                    },
                     { text: 'Results', link: '/benchmarks/results' }
                 ]
             },
