@@ -3,7 +3,7 @@
 
 Edgewise is a personal project exploring parallel graph algorithms in C++20. It compares sequential and parallel implementations, examining how synchronization, graph storage and work distribution affect performance.
 
-So far, I’ve implemented sequential and parallel breadth-first search (BFS). I plan to add PageRank next and explore parallel strongly connected components (SCC) later.
+So far, I’ve implemented sequential and parallel breadth-first search (BFS). I plan to add PageRank next and explore parallel connected components (CC) for undirected graphs later.
 
 
 ## BFS results

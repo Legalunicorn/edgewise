@@ -58,9 +58,9 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'SCC',
+                text: 'CC',
                 items: [
-                    { text: 'Introduction', link: '/scc/' }
+                    { text: 'Introduction', link: '/cc/' }
                 ]
             },
             {
