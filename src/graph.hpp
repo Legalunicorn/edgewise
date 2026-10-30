@@ -103,6 +103,10 @@ struct Graph{
             double tolerance = 1e-6,
             std::size_t max_iterations = 100) const;
 
+    std::vector<int> cc_sequential_bfs() const;
+    std::vector<int> cc_sequential_dsu() const;
+    std::vector<int> cc_parallel_afforest(std::size_t worker_count) const;
+
 private:
     std::vector<std::size_t> offsets_;
     std::vector<std::size_t> reverse_offsets_;
