@@ -19,7 +19,7 @@ void expect_same_components(const std::vector<int>& actual, const std::vector<in
     }
 }
 
-TEST(CcTest, DisconnectedComponentsAndIsolatedVertex) {
+Graph make_disconnected_components_graph() {
     Graph g(6);
     g.add_edge(0, 1);
     g.add_edge(1, 0);
@@ -28,12 +28,10 @@ TEST(CcTest, DisconnectedComponentsAndIsolatedVertex) {
     g.add_edge(3, 4);
     g.add_edge(4, 3);
     g.build_csr();
-
-    const std::vector<int> expected{10, 10, 10, 20, 20, 30};
-    expect_same_components(g.cc_sequential_bfs(), expected);
+    return g;
 }
 
-TEST(CcTest, ConnectedCycle) {
+Graph make_connected_cycle_graph() {
     Graph g(3);
     g.add_edge(0, 1);
     g.add_edge(1, 0);
@@ -42,22 +40,51 @@ TEST(CcTest, ConnectedCycle) {
     g.add_edge(2, 0);
     g.add_edge(0, 2);
     g.build_csr();
-
-    const std::vector<int> expected{42, 42, 42};
-    expect_same_components(g.cc_sequential_bfs(), expected);
+    return g;
 }
 
-
-TEST(CcTest, TwoDisconnectedPairs){
+Graph make_two_disconnected_pairs_graph() {
     Graph g(4);
     g.add_edge(0, 1);
     g.add_edge(1, 0);
     g.add_edge(2, 3);
-    g.add_edge(3 ,2);
+    g.add_edge(3, 2);
     g.build_csr();
-    const std::vector<int> expected{1, 1, 0, 0};
-    expect_same_components(g.cc_sequential_bfs(), expected);
+    return g;
 }
 
+const std::vector<int> kDisconnectedComponents{10, 10, 10, 20, 20, 30};
+const std::vector<int> kConnectedCycle{42, 42, 42};
+const std::vector<int> kTwoDisconnectedPairs{1, 1, 0, 0};
+
+TEST(CcBfsTest, DisconnectedComponentsAndIsolatedVertex) {
+    const auto g = make_disconnected_components_graph();
+    expect_same_components(g.cc_sequential_bfs(), kDisconnectedComponents);
+}
+
+TEST(CcBfsTest, ConnectedCycle) {
+    const auto g = make_connected_cycle_graph();
+    expect_same_components(g.cc_sequential_bfs(), kConnectedCycle);
+}
+
+TEST(CcBfsTest, TwoDisconnectedPairs) {
+    const auto g = make_two_disconnected_pairs_graph();
+    expect_same_components(g.cc_sequential_bfs(), kTwoDisconnectedPairs);
+}
+
+TEST(CcDsuTest, DisconnectedComponentsAndIsolatedVertex) {
+    const auto g = make_disconnected_components_graph();
+    expect_same_components(g.cc_sequential_dsu(), kDisconnectedComponents);
+}
+
+TEST(CcDsuTest, ConnectedCycle) {
+    const auto g = make_connected_cycle_graph();
+    expect_same_components(g.cc_sequential_dsu(), kConnectedCycle);
+}
+
+TEST(CcDsuTest, TwoDisconnectedPairs) {
+    const auto g = make_two_disconnected_pairs_graph();
+    expect_same_components(g.cc_sequential_dsu(), kTwoDisconnectedPairs);
+}
 
 }
