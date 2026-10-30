@@ -23,6 +23,7 @@ add_library(edgewise_graph STATIC
     src/pagerank_sequential.cpp
     src/pagerank_parallel.cpp
     src/cc_sequential_bfs.cpp
+    src/cc_sequential_dsu.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
 target_include_directories(edgewise_graph PUBLIC src) # Expose graph.hpp to consumers.
