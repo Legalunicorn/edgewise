@@ -48,6 +48,10 @@ add_executable(cc_test tests/cc_tests.cpp)
 target_link_libraries(cc_test PRIVATE edgewise_graph GTest::gtest_main)
 gtest_discover_tests(cc_test)
 
+add_executable(dsu_concurrent_test tests/dsu_concurrent_tests.cpp)
+target_link_libraries(dsu_concurrent_test PRIVATE edgewise_graph GTest::gtest_main)
+gtest_discover_tests(dsu_concurrent_test PROPERTIES TIMEOUT 10)
+
 # Keep graph generation and timing in the separate benchmark program.
 add_executable(bfs_bench
     benchmarks/bfs_bench.cpp
