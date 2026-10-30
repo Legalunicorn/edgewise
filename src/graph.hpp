@@ -105,6 +105,7 @@ struct Graph{
 
     std::vector<int> cc_sequential_bfs() const;
     std::vector<int> cc_sequential_dsu() const;
+    std::vector<int> cc_parallel_dsu(std::size_t worker_count) const;
     std::vector<int> cc_parallel_afforest(std::size_t worker_count) const;
 
 private:
