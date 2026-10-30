@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include <gtest/gtest.h>
 #include <cstddef>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -86,5 +87,31 @@ TEST(CcDsuTest, TwoDisconnectedPairs) {
     const auto g = make_two_disconnected_pairs_graph();
     expect_same_components(g.cc_sequential_dsu(), kTwoDisconnectedPairs);
 }
+
+class CcParallelDsuTest : public ::testing::TestWithParam<std::size_t> {};
+
+TEST_P(CcParallelDsuTest, DisconnectedComponentsAndIsolatedVertex) {
+    const auto g = make_disconnected_components_graph();
+    expect_same_components(g.cc_parallel_dsu(GetParam()), kDisconnectedComponents);
+}
+
+TEST_P(CcParallelDsuTest, ConnectedCycle) {
+    const auto g = make_connected_cycle_graph();
+    expect_same_components(g.cc_parallel_dsu(GetParam()), kConnectedCycle);
+}
+
+TEST_P(CcParallelDsuTest, TwoDisconnectedPairs) {
+    const auto g = make_two_disconnected_pairs_graph();
+    expect_same_components(g.cc_parallel_dsu(GetParam()), kTwoDisconnectedPairs);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    WorkerCounts,
+    CcParallelDsuTest,
+    ::testing::Values(std::size_t{1}, std::size_t{2}, std::size_t{4}),
+    [](const ::testing::TestParamInfo<std::size_t>& info) {
+        return "Workers" + std::to_string(info.param);
+    }
+);
 
 }

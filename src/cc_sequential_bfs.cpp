@@ -1,6 +1,5 @@
 #include "graph.hpp"
 #include <queue>
-#include <stdexcept>
 
 
 std::vector<int> Graph::cc_sequential_bfs() const{
