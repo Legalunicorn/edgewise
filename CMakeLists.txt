@@ -65,3 +65,9 @@ add_executable(pagerank_bench
     benchmarks/generate_graph.cpp
 )
 target_link_libraries(pagerank_bench PRIVATE edgewise_graph)
+
+add_executable(cc_bench
+    benchmarks/cc_bench.cpp
+    benchmarks/generate_graph.cpp
+)
+target_link_libraries(cc_bench PRIVATE edgewise_graph)
