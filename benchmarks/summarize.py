@@ -28,8 +28,18 @@ for index, (graph, samples) in enumerate(graphs.items()):
         n, m, seed = graph
         print(f"Graph: {n:,} vertices, {m:,} edges, seed={seed}")
 
-    baseline = median(samples[("sequential", 1)])  # Use this graph's own baseline.
-    print(f"Sequential: {baseline:.2f} ms")
+    baselines = {}
+    for implementation, label in (
+        ("sequential", "Sequential"),
+        ("cc_sequential_bfs", "Sequential BFS"),
+        ("cc_sequential_dsu", "Sequential DSU"),
+    ):
+        if (implementation, 1) in samples:
+            baselines[label] = median(samples[(implementation, 1)])
+            print(f"{label}: {baselines[label]:.2f} ms")
+
+    if not baselines:
+        raise SystemExit("No sequential baseline found for this graph.")
 
     for implementation, label in (
         ("mutex_v1", "V1 mutex"),
@@ -37,6 +47,7 @@ for index, (graph, samples) in enumerate(graphs.items()):
         ("persistent_v3", "V3 persistent"),
         ("assembly_v4", "V4 parallel assembly"),
         ("pagerank_parallel", "Parallel PageRank"),
+        ("cc_parallel_dsu", "Parallel CC DSU"),
     ):
         configurations = [
             (median(times), workers)
@@ -46,4 +57,9 @@ for index, (graph, samples) in enumerate(graphs.items()):
         if not configurations:  # Older CSVs may not contain every implementation.
             continue
         elapsed, workers = min(configurations)  # Lowest median, not fastest individual run.
-        print(f"{label}: {elapsed:.2f} ms, workers={workers}, {baseline / elapsed:.2f}x speedup")
+        speedups = ", ".join(
+            f"{baseline / elapsed:.2f}x speedup"
+            + (f" vs {name}" if len(baselines) > 1 else "")
+            for name, baseline in baselines.items()
+        )
+        print(f"{label}: {elapsed:.2f} ms, workers={workers}, {speedups}")
