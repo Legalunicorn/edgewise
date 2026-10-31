@@ -24,4 +24,9 @@ namespace gen_graph{
         std::uint32_t seed
     );
 
+    Graph random_undirected(
+            std::size_t n,
+            std::size_t m,
+            std::uint32_t seed
+    );
 }

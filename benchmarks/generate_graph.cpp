@@ -1,7 +1,8 @@
 #include "generate_graph.hpp"
 #include <random>
 #include <stdexcept>
-
+#include <utility>
+#include <set>
 
 namespace gen_graph{
 
@@ -69,4 +70,32 @@ namespace gen_graph{
         }
         return g;
     }
+
+    Graph random_undirected(std::size_t n, std::size_t m, std::uint32_t seed) {
+        check_valid_graph_size(n);
+        const auto max_edges = static_cast<std::uint64_t>(n*(n-1)/2);
+        if (m > max_edges ) throw std::invalid_argument("Edge count cannot exceed n choose 2 ");
+
+        Graph g(n);
+        std::size_t total_edges = 0;
+        std::mt19937 rng(seed);
+        std::uniform_int_distribution<int> pick(0, n-1);
+        std::set<std::pair<int,int>> st;
+        while(total_edges < m) {
+            int u = pick(rng);
+            int v = pick(rng);
+            // no selft loops
+            if (u == v) continue;
+            if (u > v) std::swap(u,v);
+            if (st.count({u,v})) continue;
+            st.insert({u,v});
+            g.add_edge(u, v);
+            g.add_edge(v, u);
+            total_edges++;
+        }
+        g.build_csr();
+        return g;
+    }
+
+
 }
