@@ -39,6 +39,7 @@ export default defineConfig({
             },
             {
                 text: 'BFS', // Algorithm and implementation explanations.
+                collapsed: true,
                 items: [
                     { text: 'Introduction', link: '/bfs/' },
                     { text: 'Sequential BFS', link: '/bfs/sequential' },
@@ -57,6 +58,7 @@ export default defineConfig({
             },
             {
                 text: 'PageRank',
+                collapsed: true,
                 items: [
                     { text: 'Introduction', link: '/pagerank/' },
                     { text: 'Sequential PageRank', link: '/pagerank/sequential' },
@@ -66,8 +68,34 @@ export default defineConfig({
             },
             {
                 text: 'CC',
+                collapsed: true,
                 items: [
-                    { text: 'Introduction', link: '/cc/' }
+                    { text: 'Introduction', link: '/cc/' },
+                    {
+                        text: 'Sequential CC',
+                        collapsed: false,
+                        items: [
+                            { text: 'Using BFS', link: '/cc/sequential-bfs' },
+                            { text: 'Using DSU', link: '/cc/sequential-dsu' }
+                        ]
+                    },
+                    {
+                        text: 'DSU',
+                        collapsed: false,
+                        items: [
+                            { text: 'Sequential DSU', link: '/cc/dsu/sequential' },
+                            { text: 'Concurrent DSU', link: '/cc/dsu/concurrent' }
+                        ]
+                    },
+                    {
+                        text: 'Parallel CC',
+                        collapsed: false,
+                        items: [
+                            { text: 'Using concurrent DSU', link: '/cc/parallel-dsu' },
+                            { text: 'Afforest', link: '/cc/afforest' }
+                        ]
+                    },
+                    { text: 'Results', link: '/cc/results' }
                 ]
             },
             {
