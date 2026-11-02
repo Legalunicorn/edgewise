@@ -52,9 +52,11 @@ Saved Release-build results on an 8-core / 16-logical-processor laptop, using ge
 | [PageRank](benchmarks/results/pagerank/pagerank_all.csv) | 1,885.92 | 429.22 | 16 | 4.39× |
 | [CC using DSU](benchmarks/results/cc/cc_all.csv) | 88.56 | 18.83 | 14 | 4.70× |
 
-Times are medians of five measured runs after warm-up. Each parallel result uses the worker count with the lowest median. CC uses the faster sequential baseline, DSU; its results are preliminary pending Afforest.
+Times are medians of five measured runs after warm-up. Each parallel result uses the worker count with the lowest median. CC uses the faster sequential baseline, DSU; its results are preliminary pending Afforest. The generated CC measurements predate parallel label collection and have not been rerun with the current implementation.
 
-BFS and PageRank use a binary-tree backbone plus random edges; CC uses random edges without enforcing connectivity. These measurements cover generated inputs on one machine. See the [documentation](https://legalunicorn.github.io/edgewise/) for details.
+BFS and PageRank use a binary-tree backbone plus random edges; CC uses random edges without enforcing connectivity. These measurements cover generated inputs on one machine.
+
+On public datasets, parallel CC using DSU took **12.75 ms on California roads (3.40× over sequential DSU)** and **13.37 ms on YouTube (2.06×)** with parallel label collection. See the [CC results](https://legalunicorn.github.io/edgewise/cc/results) for dataset credits, timings and raw measurements.
 
 ## Benchmarks
 
@@ -71,3 +73,55 @@ python3 benchmarks/summarize.py benchmarks/results/cc/new_run.csv
 ```
 
 Summarize the results. Requires Python 3 with no additional packages.
+
+### Public datasets
+
+`cc_bench` also accepts an edge-list filename. With no argument, it still runs the generated graphs above. BFS and PageRank benchmarks currently use generated graphs only.
+
+File format: exactly two nonnegative integer IDs per edge line, with blank lines and `#` comment lines allowed. There is no `n m` header. The loader compresses IDs, removes duplicate and reversed undirected pairs, keeps self-loops once and builds CSR. Only vertices appearing in edges are included. See [graph storage](https://legalunicorn.github.io/edgewise/graph-storage) for the loader API.
+
+Download the [California road network](https://snap.stanford.edu/data/roadNet-CA.html) and [YouTube network](https://snap.stanford.edu/data/com-Youtube.html) from SNAP:
+
+```bash
+mkdir -p data benchmarks/results/cc
+```
+
+Create the data and results directories. Downloaded files in `data/` are ignored by Git.
+
+```bash
+curl -fL https://snap.stanford.edu/data/roadNet-CA.txt.gz -o data/roadNet-CA.txt.gz
+```
+
+Download the California road network.
+
+```bash
+gzip -dk data/roadNet-CA.txt.gz
+```
+
+Extract the edge list and keep the archive.
+
+```bash
+curl -fL https://snap.stanford.edu/data/bigdata/communities/com-youtube.ungraph.txt.gz -o data/com-youtube.ungraph.txt.gz
+```
+
+Download the YouTube network.
+
+```bash
+gzip -dk data/com-youtube.ungraph.txt.gz
+```
+
+Extract the YouTube edge list.
+
+```bash
+./build/release/cc_bench data/roadNet-CA.txt > benchmarks/results/cc/road_ca_new_run.csv
+```
+
+Benchmark both sequential CC methods and parallel DSU. Loading and CSR construction are excluded from timing.
+
+```bash
+python3 benchmarks/summarize.py benchmarks/results/cc/road_ca_new_run.csv
+```
+
+Summarize the saved timings. To benchmark YouTube, use `data/com-youtube.ungraph.txt` and a separate output CSV. File-based results use `seed=-1`.
+
+Dataset credits and source papers are listed in the [CC results](https://legalunicorn.github.io/edgewise/cc/results#dataset-credits).
