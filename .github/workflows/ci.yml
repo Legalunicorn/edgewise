@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Release build and tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Configure
+        run: cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build/release --parallel
+      - name: Test
+        run: ctest --test-dir build/release --output-on-failure
+
+  tsan:
+    name: ThreadSanitizer
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lower address randomisation for TSan
+        run: sudo sysctl vm.mmap_rnd_bits=28
+      - name: Configure
+        run: cmake -S . -B build/tsan -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_FLAGS="-fsanitize=thread"
+      - name: Build
+        run: cmake --build build/tsan --parallel
+      - name: Test
+        run: ctest --test-dir build/tsan --output-on-failure
