@@ -11,6 +11,11 @@ struct Graph{
     std::vector<std::vector<int>> adj_list, reverse_adj_list;
     size_t size;
     explicit Graph(std::size_t n) : adj_list(n), reverse_adj_list(n), size(n) {}
+
+    void add_undirected_edge(int u, int v) {
+        add_edge(u, v);
+        if (u != v) add_edge(v, u);
+    }
     
     void add_edge(int u, int v){
         // our design choice -> build graph once only
