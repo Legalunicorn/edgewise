@@ -1,12 +1,14 @@
 # Edgewise
 
+[![CI](https://github.com/Legalunicorn/edgewise/actions/workflows/ci.yml/badge.svg)](https://github.com/Legalunicorn/edgewise/actions/workflows/ci.yml)
+
 Shared-memory graph analytics in C++20, comparing sequential and parallel BFS, PageRank, and connected components over CSR graph storage.
 
 - **BFS:** mutex discovery (V1), atomic discovery (V2), persistent workers (V3), and parallel frontier assembly (V4).
 - **PageRank:** sequential and parallel pull implementations with dangling-score redistribution.
 - **Connected components:** sequential BFS and DSU baselines, plus parallel CC using concurrent DSU. Afforest is planned.
 
-Correctness tests use GoogleTest. Benchmarks check results against sequential references outside timing.
+Correctness tests use GoogleTest, and CI also runs them under ThreadSanitizer. Benchmarks check results against sequential references outside timing.
 
 ## [Documentation](https://legalunicorn.github.io/edgewise/)
 
