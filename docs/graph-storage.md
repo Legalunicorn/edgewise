@@ -21,6 +21,7 @@ The graph uses Compressed Sparse Row (CSR) storage, which is elaborated below.
 |---|---|
 | `explicit Graph(size_t n)` | Create vertices `0` to `n - 1`. |
 | `void add_edge(int u, int v)` | Add `u -> v` before finalization. |
+| `void add_undirected_edge(int u, int v)` | Add both directions before finalization; store a self-loop once. |
 | `void build_csr()` | Build outgoing and incoming CSR, then release both adjacency lists. Later calls do nothing. |
 | `span<const int> neighbours(int u) const` | Read outgoing neighbours without copying. |
 | `span<const int> incoming_neighbours(int u) const` | Read incoming neighbours without copying. |
@@ -40,8 +41,22 @@ Call `build_csr()` before reading neighbours or degrees. Vertex IDs are zero-bas
 | `bfs_parallel_v4(s, worker_count)` | BFS with parallel frontier assembly. |
 | `pagerank_sequential(damping, tolerance, max_iterations)` | Sequential PageRank. |
 | `pagerank_parallel(worker_count, damping, tolerance, max_iterations)` | PageRank with persistent workers. |
+| `cc_sequential_bfs()` | Connected components using sequential BFS. |
+| `cc_sequential_dsu()` | Connected components using sequential DSU. |
+| `cc_parallel_dsu(worker_count)` | Connected components using concurrent DSU. |
 
-BFS returns a `vector<int>` of distances from `s`, with `-1` for unreachable vertices. PageRank returns a `vector<double>` of scores. `worker_count` is the number of worker threads.
+BFS returns a `vector<int>` of distances from `s`, with `-1` for unreachable vertices. PageRank returns a `vector<double>` of scores. CC returns a `vector<int>` with one component ID per vertex; vertices in the same component have the same ID. `worker_count` is the number of worker threads.
+
+## Loading an edge-list file
+
+`graph_loader.hpp` declares the free function `load_edge_list(path, undirected)`. It returns a graph with CSR already built.
+
+- Each edge line contains exactly two nonnegative `int` vertex IDs separated by whitespace. Blank lines and lines beginning with `#` after optional whitespace are ignored.
+- IDs are compressed to a dense range starting at zero. Only vertices appearing in edges are included; isolated vertices cannot be declared in this format.
+- Duplicate edges are removed. With `undirected = true`, reversed pairs count as the same edge and both directions are stored. Self-loops are retained once.
+- Other lines throw an exception. There is no `n m` header: header information must be in comments.
+
+The returned graph uses the compressed IDs. The original-ID mapping is not returned. File loading and CSR construction happen before benchmark timing.
 
 ## Why CSR?
 Initially,  I used an adjacency list `vector<vector<int>>` to represent the graph. This is easy to build, and a common representation commonly used in competitive programming. 
@@ -100,7 +115,7 @@ for (int v : g.neighbours(0)) { // Read neighbours 1 and 2 without copying.
 }
 ```
 
-`add_edge(u, v)` adds only `u -> v`. For an undirected edge, the caller adds both directions.
+`add_edge(u, v)` adds only `u -> v`. Use `add_undirected_edge(u, v)` to add both directions, or a single entry when `u == v`. These methods do not remove duplicate edges.
 
 Before finalization, edges are collected in an adjacency list. `build_csr()` converts it to CSR and releases that list. Later calls do nothing; adding edges after finalization throws an exception. The finalized graph can be reused across traversals.
 
