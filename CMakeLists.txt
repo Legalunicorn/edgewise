@@ -25,6 +25,7 @@ add_library(edgewise_graph STATIC
     src/cc_sequential_bfs.cpp
     src/cc_sequential_dsu.cpp
     src/cc_parallel_dsu.cpp
+    src/graph_loader.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
 target_include_directories(edgewise_graph PUBLIC src) # Expose graph.hpp to consumers.
@@ -52,6 +53,12 @@ gtest_discover_tests(cc_test)
 add_executable(dsu_concurrent_test tests/dsu_concurrent_tests.cpp)
 target_link_libraries(dsu_concurrent_test PRIVATE edgewise_graph GTest::gtest_main)
 gtest_discover_tests(dsu_concurrent_test PROPERTIES TIMEOUT 10)
+
+add_executable(graph_loader_test tests/graph_loader_tests.cpp)
+target_link_libraries(graph_loader_test PRIVATE edgewise_graph GTest::gtest_main)
+gtest_discover_tests(graph_loader_test
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 # Keep graph generation and timing in the separate benchmark program.
 add_executable(bfs_bench

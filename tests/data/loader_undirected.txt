@@ -1,0 +1,11 @@
+# 6 vertices, with deliberately nonconsecutive IDs.
+
+10 20
+10 30
+10 40
+40 50
+40 60
+
+   # Reverse duplicate and one self-loop, indented comment
+20 10
+30 30

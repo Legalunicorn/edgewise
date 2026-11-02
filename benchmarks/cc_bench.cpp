@@ -2,9 +2,11 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include "graph_loader.hpp"
 
 
 bool expect_same_components(const std::vector<int>& actual, const std::vector<int>& expected) {
@@ -25,7 +27,7 @@ bool expect_same_components(const std::vector<int>& actual, const std::vector<in
 // cc is a callable that runs one cc and returns the components
 bool benchmark_cc(const char* implementation, std::size_t workers,
                    std::size_t run, const std::vector<int>& expected, auto cc,
-                   std::size_t n, std::size_t m, std::uint32_t seed) {
+                   std::size_t n, std::size_t m, std::int64_t seed) {
     const auto start = std::chrono::steady_clock::now();
     const auto result = cc(); // Time the complete CC, including initialization and worker setup.
     const auto end = std::chrono::steady_clock::now();
@@ -45,8 +47,8 @@ bool benchmark_cc(const char* implementation, std::size_t workers,
     return true;
 }
 
-int benchmark_graph(std::size_t n, std::size_t m, std::uint32_t seed){
-    Graph g = gen_graph::random_undirected(n, m, seed); // Generate outside timing.
+int benchmark_graph(const Graph& g, std::size_t m, std::int64_t seed){
+    const std::size_t n = g.size;
     const auto expected = g.cc_sequential_bfs(); // Untimed correctness ref
 
     const std::vector<std::size_t> worker_counts = {1, 2, 3, 4, 6, 8, 10, 12, 14, 16};
@@ -62,11 +64,35 @@ int benchmark_graph(std::size_t n, std::size_t m, std::uint32_t seed){
     return 0; // All traversals matched the reference.
 }
 
-int main() {
+int benchmark_generated_graph(std::size_t n, std::size_t m, std::uint32_t seed){
+    const Graph g = gen_graph::random_undirected(n,m,seed);
+    return benchmark_graph(g, m, seed);
+}
+
+
+int main(int argc, char* argv[]) {
+
+    if (argc > 2) {
+        std::cerr << "[usage] cc_bench FILENAME\n";
+        return 1;
+    }
     std::cout << "implementation,vertices,edges,seed,workers,run,time_ms\n"; // One header for the entire CSV.
-    if (benchmark_graph(200'000, 800'000, 67) != 0) return 1; // Stop if a traversal fails.
-    if (benchmark_graph(500'000, 2'000'000, 67) != 0) return 1;
-    if (benchmark_graph(1'000'000, 4'000'000, 67) != 0) return 1;
-    if (benchmark_graph(1'500'000, 6'000'000, 67) != 0) return 1;
+    bool isUndirected = true; // connected component
+    if (argc == 2){
+        const Graph g = load_edge_list(argv[1], isUndirected);
+        // count the edges
+        // TODO: count it while building the graph
+        std::size_t m = 0;
+        for (int u = 0; u < g.size; u++){
+            for (auto& v: g.neighbours(u)){
+                if (u <= v) m++;
+            }
+        }
+        return benchmark_graph(g, m, -1); // no seed for non random generated
+    }
+    if (benchmark_generated_graph(200'000, 800'000, 67) != 0) return 1; // Stop if a traversal fails.
+    if (benchmark_generated_graph(500'000, 2'000'000, 67) != 0) return 1;
+    if (benchmark_generated_graph(1'000'000, 4'000'000, 67) != 0) return 1;
+    if (benchmark_generated_graph(1'500'000, 6'000'000, 67) != 0) return 1;
     return 0;
 }

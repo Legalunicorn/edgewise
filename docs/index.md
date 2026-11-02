@@ -3,7 +3,7 @@
 
 Edgewise is a personal project exploring parallel graph algorithms in C++20. It compares sequential and parallel implementations, examining how synchronization, graph storage and work distribution affect performance.
 
-So far, I’ve implemented sequential and parallel breadth-first search (BFS) and PageRank. I plan to explore parallel connected components (CC) for undirected graphs later.
+So far, I’ve implemented sequential and parallel breadth-first search (BFS), PageRank and connected components (CC) for undirected graphs. Afforest is planned.
 
 
 ## BFS results
@@ -70,10 +70,22 @@ Times are medians of five measured runs after warm-up, using the worker count wi
 
 See the [PageRank results](/pagerank/results) for measurement details and [parallel implementation](/pagerank/parallel) for the code.
 
+## CC results
+
+Parallel CC uses a shared concurrent DSU, with workers processing separate vertex ranges and collecting component labels after a barrier.
+
+| Public dataset | Sequential DSU | Parallel DSU | Workers | Speedup |
+|---|---:|---:|---:|---:|
+| California roads | 43.32 ms | 12.75 ms | 14 | 3.40× |
+| YouTube | 27.50 ms | 13.37 ms | 16 | 2.06× |
+
+Times are medians of five measured runs after warm-up using a Release build on the same laptop. Each parallel result uses the worker count with the lowest median. Loading and CSR construction are excluded. See the [CC results](/cc/results) for dataset sizes, sources, both sequential baselines and raw measurements.
+
 ## Explore
 
 - [Sequential BFS](/bfs/sequential): the algorithm, returned distances and frontier structure.
 - [Parallel BFS](/bfs/v1-mutex): the purpose and tradeoffs of each implementation.
 - [PageRank](/pagerank/): the algorithm, implementations and results.
+- [Connected components](/cc/): sequential BFS and DSU, concurrent DSU and parallel CC.
 - [Graph storage](/graph-storage.md): the shared CSR representation.
 - [Getting started](/getting-started): build, test and run the project.
