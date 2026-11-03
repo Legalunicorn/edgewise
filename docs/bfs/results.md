@@ -36,8 +36,8 @@ Compared with sequential BFS on the same graph. Brackets show the selected worke
 
 ## Observations
 
-#### v1 did not scall well (as expected)
-Its best result used only one worker at every size, and was still slower than sequential BFS. Every discovery check passes through the same shared mutex, which is obviously a huge bottle neck. 
+#### V1 did not scale well (as expected)
+Its best result used only one worker at every size, and was still slower than sequential BFS. Every discovery check passes through the same shared mutex, which is obviously a huge bottleneck. 
 
 This was expected as the main purpose of V1 was transition to parallel implementation and introducing worker splitting.
 
