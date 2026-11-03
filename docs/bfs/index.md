@@ -11,6 +11,19 @@ I started with a simple sequential implementation, then made parallel iterations
 
 A **frontier** is one BFS distance layer. Vertices within that layer can be processed concurrently, but the next layer must be completed before it is expanded.
 
+![Animation of parallel BFS with four workers expanding ring by ring from a source vertex](/animations/parallel-bfs-radial.svg)
+
+The animation shows V3 on a generated graph, with each ring being one frontier. The frontier is split into four contiguous slices, one per worker, and each colour marks the worker responsible for a vertex. 
+
+A red ring marks a lost compare-and-swap: two workers saw the same vertex as unvisited, and only one claim succeeded. This is applied in [V2](/bfs/v2-atomic).
+
+Finished vertices turn grey, and the last frame shows the BFS tree. [V3: Persistent workers](/bfs/v3-persistent-workers) walks through the same steps on a smaller graph.
+
+
+::: tip Note
+Generative AI was used to create the visualizations for this project.
+:::
+
 ## Implementations
 
 I recommend reading in this order. They're written as a tutorial style because I found it enjoyable, and it also solidifies my understanding.
@@ -25,4 +38,4 @@ I recommend reading in this order. They're written as a tutorial style because I
 
 ## Results
 
-See the [benchmark results](/benchmarks/results) and [measurement methodology](/benchmarks/methodology). Each version is an experiment: an attempted optimization does not necessarily make BFS faster.
+See the [benchmark results](/bfs/results) and [measurement methodology](/benchmarks/methodology). Each version is an experiment: an attempted optimization does not necessarily make BFS faster.
