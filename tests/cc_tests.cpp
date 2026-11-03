@@ -1,6 +1,7 @@
 #include "graph.hpp"
 #include <gtest/gtest.h>
 #include <cstddef>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -113,5 +114,37 @@ INSTANTIATE_TEST_SUITE_P(
         return "Workers" + std::to_string(info.param);
     }
 );
+
+class CcAfforestTest : public ::testing::TestWithParam<std::size_t> {};
+
+TEST_P(CcAfforestTest, DisconnectedComponentsAndIsolatedVertex) {
+    const auto g = make_disconnected_components_graph();
+    expect_same_components(g.cc_parallel_afforest(GetParam()), kDisconnectedComponents);
+}
+
+TEST_P(CcAfforestTest, ConnectedCycle) {
+    const auto g = make_connected_cycle_graph();
+    expect_same_components(g.cc_parallel_afforest(GetParam()), kConnectedCycle);
+}
+
+TEST_P(CcAfforestTest, TwoDisconnectedPairs) {
+    const auto g = make_two_disconnected_pairs_graph();
+    expect_same_components(g.cc_parallel_afforest(GetParam()), kTwoDisconnectedPairs);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    WorkerCounts,
+    CcAfforestTest,
+    ::testing::Values(std::size_t{1}, std::size_t{2}, std::size_t{4}),
+    [](const ::testing::TestParamInfo<std::size_t>& info) {
+        return "Workers" + std::to_string(info.param);
+    }
+);
+
+// separate suite name: GoogleTest rejects TEST and TEST_P sharing one suite
+TEST(CcAfforestInputTest, ZeroWorkersThrows) {
+    const auto g = make_connected_cycle_graph();
+    EXPECT_THROW(g.cc_parallel_afforest(0), std::invalid_argument);
+}
 
 }
