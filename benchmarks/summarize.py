@@ -48,6 +48,7 @@ for index, (graph, samples) in enumerate(graphs.items()):
         ("assembly_v4", "V4 parallel assembly"),
         ("pagerank_parallel", "Parallel PageRank"),
         ("cc_parallel_dsu", "Parallel CC DSU"),
+        ("cc_parallel_afforest", "Parallel CC Afforest"),
     ):
         configurations = [
             (median(times), workers)

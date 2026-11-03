@@ -59,6 +59,7 @@ int benchmark_graph(const Graph& g, std::size_t m, std::int64_t seed){
 
         for (std::size_t w : worker_counts) { // Use the same worker counts for every graph.
             if (!benchmark_cc("cc_parallel_dsu", w, run, expected, [&] { return g.cc_parallel_dsu(w); }, n, m, seed)) return 1;
+            if (!benchmark_cc("cc_parallel_afforest", w, run, expected, [&] { return g.cc_parallel_afforest(w); }, n, m, seed)) return 1;
         }
     }
     return 0; // All traversals matched the reference.
