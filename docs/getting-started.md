@@ -29,7 +29,8 @@ Prints distances from vertex 1, with `-1` for unreachable vertices.
 
 ## Benchmarks
 
-Executables: `bfs_bench`, `pagerank_bench`, and `cc_bench`. For example, to benchmark both sequential CC methods and parallel DSU across four generated graph sizes:
+
+Executables: `bfs_bench`, `pagerank_bench`, and `cc_bench`. For example, to benchmark both sequential CC methods, parallel DSU and Afforest across four generated graph sizes:
 
 ```bash
 # run the benchmark and save its CSV
@@ -37,6 +38,15 @@ Executables: `bfs_bench`, `pagerank_bench`, and `cc_bench`. For example, to benc
 # summarize the timings (Python 3, no extra packages)
 python3 benchmarks/summarize.py benchmarks/results/cc/new_run.csv
 ```
+
+To benchmark one generated graph of a chosen size, pass the number of vertices and edges:
+
+```bash
+# one million vertices and 16 million undirected edges
+./build/release/cc_bench 1000000 16000000 > benchmarks/results/cc/new_run.csv
+```
+
+Large graphs take a while to generate. 16 million vertices and 64 million edges needs several GB of memory.
 
 ## Public datasets
 

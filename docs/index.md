@@ -3,7 +3,8 @@
 
 Edgewise is a personal project exploring parallel graph algorithms in C++20. It compares sequential and parallel implementations, examining how synchronization, graph storage and work distribution affect performance.
 
-So far, I’ve implemented sequential and parallel breadth-first search (BFS), PageRank and connected components (CC) for undirected graphs. Afforest is planned.
+
+So far, I’ve implemented sequential and parallel breadth-first search (BFS), PageRank and connected components (CC) for undirected graphs, including the Afforest CC algorithm.
 
 
 ## BFS results
@@ -49,7 +50,23 @@ A brief summary of the parallel versions implemented:
 - Measurements use a Release build on an 8-core, 16-logical-processor laptop.
 :::
 
-Times are medians of five measured repetitions after warm-up. For each graph, the parallel result uses the worker count with the lowest median. Speedup is the sequential median divided by the parallel median. See the [benchmark methodology](/benchmarks/methodology) and [results](/benchmarks/results) for details.
+Times are medians of five measured repetitions after warm-up. For each graph, the parallel result uses the worker count with the lowest median. Speedup is the sequential median divided by the parallel median. See the [benchmark methodology](/benchmarks/methodology) and [results](/bfs/results) for details.
+
+## CC results
+
+::: warning to review
+:::
+
+Both parallel versions share a concurrent DSU. Parallel DSU unions every edge, while [Afforest](/cc/afforest) links a few neighbours per vertex first and then skips vertices already in the largest component.
+
+| Graph | Average degree | Sequential DSU | Parallel DSU | Afforest |
+|---|---:|---:|---:|---:|
+| California roads | 2.8 | 41.35 ms | 11.63 ms | 14.00 ms |
+| YouTube | 5.3 | 30.98 ms | 9.14 ms | 8.80 ms |
+| Generated, 1M vertices | 32 | 98.19 ms | 28.72 ms | **14.80 ms** |
+| Generated, 16M vertices | 8 | 2,688.94 ms | 555.88 ms | **343.24 ms** |
+
+Afforest is slightly slower than parallel DSU on small, low-degree graphs, and pulls ahead on denser graphs and on graphs larger than the CPU cache. Times are medians of five measured runs after warm-up using a Release build on the same laptop, with the best worker count for each. See the [CC results](/cc/results) for all graphs, worker counts and raw measurements.
 
 ## PageRank results
 
@@ -70,22 +87,11 @@ Times are medians of five measured runs after warm-up, using the worker count wi
 
 See the [PageRank results](/pagerank/results) for measurement details and [parallel implementation](/pagerank/parallel) for the code.
 
-## CC results
-
-Parallel CC uses a shared concurrent DSU, with workers processing separate vertex ranges and collecting component labels after a barrier.
-
-| Public dataset | Sequential DSU | Parallel DSU | Workers | Speedup |
-|---|---:|---:|---:|---:|
-| California roads | 43.32 ms | 12.75 ms | 14 | 3.40× |
-| YouTube | 27.50 ms | 13.37 ms | 16 | 2.06× |
-
-Times are medians of five measured runs after warm-up using a Release build on the same laptop. Each parallel result uses the worker count with the lowest median. Loading and CSR construction are excluded. See the [CC results](/cc/results) for dataset sizes, sources, both sequential baselines and raw measurements.
-
 ## Explore
 
 - [Sequential BFS](/bfs/sequential): the algorithm, returned distances and frontier structure.
 - [Parallel BFS](/bfs/v1-mutex): the purpose and tradeoffs of each implementation.
+- [Connected components](/cc/): sequential BFS and DSU, concurrent DSU, parallel CC and Afforest.
 - [PageRank](/pagerank/): the algorithm, implementations and results.
-- [Connected components](/cc/): sequential BFS and DSU, concurrent DSU and parallel CC.
 - [Graph storage](/graph-storage.md): the shared CSR representation.
 - [Getting started](/getting-started): build, test and run the project.

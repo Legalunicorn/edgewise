@@ -1,8 +1,5 @@
 # Sequential DSU
 
-::: info Under construction
-This page is under construction.
-:::
 
 A disjoint-set union (DSU) maintains groups of elements. `find(v)` returns the representative of a group, and `union_set(a, b)` merges the groups containing `a` and `b`.
 

@@ -53,17 +53,7 @@ export default defineConfig({
                             { text: 'V4: Parallel frontier assembly', link: '/bfs/v4-parallel-frontier-assembly' }
                         ]
                     },
-                    { text: 'Results', link: '/benchmarks/results' }
-                ]
-            },
-            {
-                text: 'PageRank',
-                collapsed: true,
-                items: [
-                    { text: 'Introduction', link: '/pagerank/' },
-                    { text: 'Sequential PageRank', link: '/pagerank/sequential' },
-                    { text: 'Parallel PageRank', link: '/pagerank/parallel' },
-                    { text: 'Results', link: '/pagerank/results' }
+                    { text: 'Results', link: '/bfs/results' }
                 ]
             },
             {
@@ -99,10 +89,19 @@ export default defineConfig({
                 ]
             },
             {
-                text: 'Benchmarks', // Measurement method and results.
+                text: 'PageRank',
+                collapsed: true,
+                items: [
+                    { text: 'Introduction', link: '/pagerank/' },
+                    { text: 'Sequential PageRank', link: '/pagerank/sequential' },
+                    { text: 'Parallel PageRank', link: '/pagerank/parallel' },
+                    { text: 'Results', link: '/pagerank/results' }
+                ]
+            },
+            {
+                text: 'Benchmarks', // Measurement method.
                 items: [
                     { text: 'Methodology', link: '/benchmarks/methodology' },
-                    { text: 'Results', link: '/benchmarks/results' }
                 ]
             }
         ]
