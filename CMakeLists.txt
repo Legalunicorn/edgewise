@@ -25,6 +25,7 @@ add_library(edgewise_graph STATIC
     src/cc_sequential_bfs.cpp
     src/cc_sequential_dsu.cpp
     src/cc_parallel_dsu.cpp
+    src/cc_parallel_afforest.cpp
     src/graph_loader.cpp
 )
 target_compile_features(edgewise_graph PUBLIC cxx_std_20) # Also applies to consumers.
