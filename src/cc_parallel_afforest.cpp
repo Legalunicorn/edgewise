@@ -6,6 +6,8 @@
 #include <barrier>
 #include <random>
 #include <unordered_map>
+#include <atomic>
+#include <algorithm>
 
 
 namespace{
@@ -99,6 +101,10 @@ std::vector<int> Graph::cc_parallel_afforest(std::size_t worker_count) const{
     std::vector<std::jthread> workers;
     workers.reserve(worker_count);
 
+    // during the last stage we split to chunks
+    const std::size_t CHUNK = 4096;
+    std::atomic<std::size_t> next_chunk{0};
+
     // is this slow? O(V) initializable??
     std::vector<int> components(size);
 
@@ -129,9 +135,14 @@ std::vector<int> Graph::cc_parallel_afforest(std::size_t worker_count) const{
 
         // (main thread random samples)
 
-        // link remaining (no need to do chunking for now)
+        // link remaining by CHUNKS
         sync.arrive_and_wait(); // 5
-        link_remaining(*this, dsu, start, end, major_component);
+        while(true){
+            const std::size_t s = next_chunk.fetch_add(CHUNK);
+            if (s >= size) break;
+            std::size_t e = std::min(s + CHUNK, size);
+            link_remaining(*this, dsu, s, e, major_component);
+        }
 
         // combine results 
         sync.arrive_and_wait(); // 6
