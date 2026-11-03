@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <ctime>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include "graph_loader.hpp"
@@ -73,11 +74,14 @@ int benchmark_generated_graph(std::size_t n, std::size_t m, std::uint32_t seed){
 
 int main(int argc, char* argv[]) {
 
-    if (argc > 2) {
-        std::cerr << "[usage] cc_bench FILENAME\n";
+    if (argc > 3) {
+        std::cerr << "[usage] cc_bench [FILENAME | VERTICES EDGES]\n";
         return 1;
     }
     std::cout << "implementation,vertices,edges,seed,workers,run,time_ms\n"; // One header for the entire CSV.
+    if (argc == 3) { // one generated graph of the given size
+        return benchmark_generated_graph(std::stoull(argv[1]), std::stoull(argv[2]), 67);
+    }
     bool isUndirected = true; // connected component
     if (argc == 2){
         const Graph g = load_edge_list(argv[1], isUndirected);
