@@ -338,6 +338,6 @@ std::vector<int> Graph::cc_parallel_afforest(std::size_t worker_count) const {
 Afforest saves edge work, but adds a few extra passes over all vertices. It pulls ahead when there is a lot of edge work to skip:
 
 - **Higher average degree.** Two rounds read two neighbours per vertex. The rest of each list is skipped for vertices in the large component.
-- **Graphs larger than the CPU cache.** Skipped unions on a large parent array would each be a cache miss.
+- **Larger graphs.** On 16 million vertices it was 1.62× faster. Its 64 MB parent array no longer fits in the 16 MB L3 cache, so each union probably costs more and skipping saves more, but I have not profiled this.
 
 On small graphs and on low-degree graphs such as California roads, it is slightly slower than parallel DSU (0.83× to 0.90× in the results). See the [CC results](/cc/results) for the measurements.

@@ -97,12 +97,6 @@ export default defineConfig({
                     { text: 'Parallel PageRank', link: '/pagerank/parallel' },
                     { text: 'Results', link: '/pagerank/results' }
                 ]
-            },
-            {
-                text: 'Benchmarks', // Measurement method.
-                items: [
-                    { text: 'Methodology', link: '/benchmarks/methodology' },
-                ]
             }
         ]
     }

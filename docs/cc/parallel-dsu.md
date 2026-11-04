@@ -1,9 +1,5 @@
 # Parallel CC using concurrent DSU
 
-::: info Under construction
-This page is under construction.
-:::
-
 This implementation uses the same approach as [sequential CC using DSU](/cc/sequential-dsu), but workers claim chunks of vertices and process them using a shared [concurrent DSU](/cc/dsu/concurrent).
 
 Here we assume an undirected graph and a positive worker count.

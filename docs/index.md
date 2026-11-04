@@ -50,12 +50,9 @@ A brief summary of the parallel versions implemented:
 - Measurements use a Release build on an 8-core, 16-logical-processor laptop.
 :::
 
-Times are medians of five measured repetitions after warm-up. For each graph, the parallel result uses the worker count with the lowest median. Speedup is the sequential median divided by the parallel median. See the [benchmark methodology](/benchmarks/methodology) and [results](/bfs/results) for details.
+Times are medians of five measured repetitions after warm-up. For each graph, the parallel result uses the worker count with the lowest median. Speedup is the sequential median divided by the parallel median. See the [BFS results](/bfs/results) for details.
 
 ## CC results
-
-::: warning to review
-:::
 
 Both parallel versions share a concurrent DSU. Parallel DSU unions every edge, while [Afforest](/cc/afforest) links a few neighbours per vertex first and then skips vertices already in the largest component.
 
@@ -66,7 +63,7 @@ Both parallel versions share a concurrent DSU. Parallel DSU unions every edge, w
 | Generated, 1M vertices | 32 | 98.19 ms | 28.72 ms | **14.80 ms** |
 | Generated, 16M vertices | 8 | 2,688.94 ms | 555.88 ms | **343.24 ms** |
 
-Afforest is slightly slower than parallel DSU on small, low-degree graphs, and pulls ahead on denser graphs and on graphs larger than the CPU cache. Times are medians of five measured runs after warm-up using a Release build on the same laptop, with the best worker count for each. See the [CC results](/cc/results) for all graphs, worker counts and raw measurements.
+Afforest is slightly slower than parallel DSU on small, low-degree graphs, and pulls ahead on denser and larger graphs. Times are medians of five measured runs after warm-up using a Release build on the same laptop, with the best worker count for each. See the [CC results](/cc/results) for all graphs, worker counts and raw measurements.
 
 ## PageRank results
 

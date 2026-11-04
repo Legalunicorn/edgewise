@@ -75,6 +75,32 @@ Graph make_bridged_triangle_and_clique_graph() {
     return g;
 }
 
+// copies of the bridged graph, enough vertices for workers to claim several chunks
+Graph make_repeated_bridged_graph(int copies) {
+    const auto base = make_bridged_triangle_and_clique_graph();
+    Graph g(9 * copies);
+    for (int k = 0; k < copies; k++) {
+        for (int u = 0; u < 9; u++) {
+            for (int v : base.neighbours(u)) g.add_edge(9 * k + u, 9 * k + v);
+        }
+    }
+    g.build_csr();
+    return g;
+}
+
+// each copy has one 8-vertex component and one isolated vertex
+std::vector<int> repeated_bridged_components(int copies) {
+    std::vector<int> labels;
+    for (int k = 0; k < copies; k++) {
+        labels.insert(labels.end(), 8, 2 * k);
+        labels.push_back(2 * k + 1);
+    }
+    return labels;
+}
+
+// 1200 copies give 10,800 vertices, more than two 4,096-vertex chunks
+constexpr int kRepeatedCopies = 1200;
+
 const std::vector<int> kDisconnectedComponents{10, 10, 10, 20, 20, 30};
 const std::vector<int> kConnectedCycle{42, 42, 42};
 const std::vector<int> kTwoDisconnectedPairs{1, 1, 0, 0};
@@ -132,6 +158,11 @@ TEST_P(CcParallelDsuTest, BridgedTriangleAndClique) {
     expect_same_components(g.cc_parallel_dsu(GetParam()), kBridgedTriangleAndClique);
 }
 
+TEST_P(CcParallelDsuTest, RepeatedBridgedGraphAcrossChunks) {
+    const auto g = make_repeated_bridged_graph(kRepeatedCopies);
+    expect_same_components(g.cc_parallel_dsu(GetParam()), repeated_bridged_components(kRepeatedCopies));
+}
+
 INSTANTIATE_TEST_SUITE_P(
     WorkerCounts,
     CcParallelDsuTest,
@@ -161,6 +192,11 @@ TEST_P(CcAfforestTest, TwoDisconnectedPairs) {
 TEST_P(CcAfforestTest, BridgedTriangleAndClique) {
     const auto g = make_bridged_triangle_and_clique_graph();
     expect_same_components(g.cc_parallel_afforest(GetParam()), kBridgedTriangleAndClique);
+}
+
+TEST_P(CcAfforestTest, RepeatedBridgedGraphAcrossChunks) {
+    const auto g = make_repeated_bridged_graph(kRepeatedCopies);
+    expect_same_components(g.cc_parallel_afforest(GetParam()), repeated_bridged_components(kRepeatedCopies));
 }
 
 INSTANTIATE_TEST_SUITE_P(
