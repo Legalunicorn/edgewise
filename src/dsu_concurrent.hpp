@@ -9,28 +9,28 @@
 struct ConcurrentDSU{
 public:
     int n; 
-    std::vector<std::atomic<int>> par;
-    explicit ConcurrentDSU(int sz) : n(sz), par(sz) {
-        for (int i  = 0; i < n; i++) par[i].store(i);
+    std::vector<std::atomic<int>> parent;
+    explicit ConcurrentDSU(int sz) : n(sz), parent(sz) {
+        for (int i  = 0; i < n; i++) parent[i].store(i);
     }
 
     int find(int v){
         int root = v;
         // find root using read only
         while (true){
-            const int p = par[root].load();
+            const int p = parent[root].load();
             if (p==root) break;
             root = p;
         }
 
         // shorten path towards root
         while(true){
-            int p = par[v].load();
+            int p = parent[v].load();
             // parent is already our root (=) OR 
             // parent has moved to a smaller ID due to another thread
             if (p <= root) break;
             // a failed CAS updates p; continue from that observed parent.
-            par[v].compare_exchange_strong(p, root);
+            parent[v].compare_exchange_strong(p, root);
             v = p;
         }
         return root;
@@ -43,7 +43,7 @@ public:
             if (pa == pb) return;
             if (pa > pb) std::swap(pa, pb);
             // if pb is still a root, make pa its parent.
-            if (par[pb].compare_exchange_strong(pb, pa)) return;
+            if (parent[pb].compare_exchange_strong(pb, pa)) return;
             // retry..
         }
     }
