@@ -81,7 +81,7 @@ namespace{
     void link_remaining(const Graph& g, ConcurrentDSU& dsu, std::size_t start, std::size_t end, int major_component){
         const int NEIGHBOUR_ROUDNS = 2;
         for (std::size_t u = start;  u < end ; u++){
-            if (g.outdegree(u) <= NEIGHBOUR_ROUDNS || dsu.par[u].load()==major_component) continue;
+            if (g.outdegree(u) <= NEIGHBOUR_ROUDNS || dsu.parent[u].load()==major_component) continue;
             for (const auto& v: g.neighbours(u).subspan(NEIGHBOUR_ROUDNS)) {
                 dsu.union_set(u, v);
             }

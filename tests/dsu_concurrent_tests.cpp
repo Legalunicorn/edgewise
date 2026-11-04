@@ -6,7 +6,7 @@
 
 TEST(ConcurrentDsuTest, InitiallySeparate) {
     ConcurrentDSU dsu(6);
-    ASSERT_EQ(dsu.par.size(), 6u);
+    ASSERT_EQ(dsu.parent.size(), 6u);
     for (int v = 0; v < 6; ++v) {
         EXPECT_EQ(dsu.find(v), v);
     }
@@ -35,10 +35,10 @@ TEST(ConcurrentDsuTest, CompressesParentChain) {
         dsu.union_set(v, v - 1);
     }
 
-    ASSERT_EQ(dsu.par[7].load(), 6);
+    ASSERT_EQ(dsu.parent[7].load(), 6);
     EXPECT_EQ(dsu.find(7), 0);
     for (int v = 0; v < 8; ++v) {
-        EXPECT_EQ(dsu.par[v].load(), 0);
+        EXPECT_EQ(dsu.parent[v].load(), 0);
     }
 }
 
