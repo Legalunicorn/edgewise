@@ -52,8 +52,8 @@ These ratios depend on the sequential time, which varied more between sessions t
 1. **Afforest is slightly slower than parallel DSU on small or low-degree graphs**
      - It's slower on California roads, where the two neighbour rounds already cover most edges and the extra passes cost time.
 2.  **Afforest beats DSU as the average degree grows.** 
-    - At degree 32,  it's 1.94× faster than parallel DSU, which is itself 3.42× faster than sequential DSU. 
-    - **Afforest also pulls ahead once the graph is larger than the cache.** With 16 million vertices, the parent array takes 64 MB and no longer fits in my device's 16 MB L3 cache. Every edge that wasnt skipped with DSU slowed algorithm.
+    - At degree 32, it's 1.94× faster than parallel DSU, which is itself 3.42× faster than sequential DSU. 
+    - **Afforest also pulls ahead on the largest graph.** With 16 million vertices it's 1.62× faster. The parent array takes 64 MB, more than my device's 16 MB L3 cache, so I suspect each union costs more there. I have not profiled this.
 3. **Dynamic chunks matter for skewed graphs.** 
     - Before chunking, parallel DSU took 13.20 ms on YouTube, with chunks it cut down to 9.14 ms.
 

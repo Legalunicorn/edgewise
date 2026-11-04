@@ -38,4 +38,4 @@ I recommend reading in this order. They're written as a tutorial style because I
 
 ## Results
 
-See the [benchmark results](/bfs/results) and [measurement methodology](/benchmarks/methodology). Each version is an experiment: an attempted optimization does not necessarily make BFS faster.
+See the [benchmark results](/bfs/results). Each version is an experiment: an attempted optimization does not necessarily make BFS faster.
