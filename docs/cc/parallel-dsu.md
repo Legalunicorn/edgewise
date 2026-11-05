@@ -11,12 +11,13 @@ Parallelizing our sequential DSU is quite simple, as the algorithm doesn't chang
 ### Chunking
 Splitting vertex by equally large ranges can result in uneven work, the work required is based on the total number of edges from from the vertices.
 
-Instead, the vertices are cut into **chunks** of `CHUNK` (I chose `1024`) vertices, and a worker that is free claims the next unclaimed chunk from a shared atomic counter: 
+Instead, the vertices are cut into **chunks** of `CHUNK` (I chose `4096`) vertices, and a worker that is free claims the next unclaimed chunk from a shared atomic counter: 
 
 ```cpp
 // worker claiming the next chunk
 const size_t start = next_chunk.fetch_add(CHUNK);
-if (s >= size) break; // out of bounds, no chunks left
+// out of bounds, no chunks left
+if (start >= size) break;
 
 // ensure CHUNK is not larger than the
 // number of vertices left to process
