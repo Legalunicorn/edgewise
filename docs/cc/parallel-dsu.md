@@ -9,7 +9,7 @@ Here we assume an undirected graph and a positive worker count.
 Parallelizing our sequential DSU is quite simple, as the algorithm doesn't change much. The bulk of the complication is handled by our [ConcurrentDSU](/cc/dsu/concurrent), where we handle atomic operations in a safe manner. The remaining work is deciding which vertices each worker processes.
 
 ### Chunking
-Splitting vertex by equally large ranges can result in uneven work, the work required is based on the total number of edges from from the vertices.
+Splitting vertices by equally large ranges can result in uneven work, the work required is based on the total number of edges from the vertices.
 
 Instead, the vertices are cut into **chunks** of `CHUNK` (I chose `4096`) vertices, and a worker that is free claims the next unclaimed chunk from a shared atomic counter: 
 
@@ -96,9 +96,9 @@ std::vector<int> Graph::cc_parallel_dsu(std::size_t worker_count) const {
 An earlier version I had for Parallel CC with DSU gave each worker an equal range of vertices for the unions as well.
 This was mostly fine on randomly generated graphs I had because the edges were quite evenly distributed
 
-However I realised this implementation wasn't as performant in real world data sets, where the distribution of edges could be uneven, such as from my the Youtube dataset.
+However I realised this implementation wasn't as performant in real world data sets, where the distribution of edges could be uneven, such as the YouTube dataset.
 
-After adding chunking, it brought parallel DSU on the Youtube dataset from from **13.20 ms** down to **9.14 ms,** roughly a **30%** improvement!
+After adding chunking, it brought parallel DSU on the YouTube dataset from **13.20 ms** down to **9.14 ms,** roughly a **30%** improvement!
 
 The chunk size is a tradeoff. Small chunks balance better, but every claim touches the same shared counter. Large chunks bring the imbalance back.
 
