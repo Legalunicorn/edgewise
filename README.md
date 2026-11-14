@@ -44,10 +44,10 @@ Saved Release-build results on an 8-core / 16-logical-processor laptop, using ge
 | Implementation | Sequential (ms) | Parallel (ms) | Workers | Speedup |
 |---|---:|---:|---:|---:|
 | [BFS V3](benchmarks/results/bfs/bfs_comparison_v1-v4_last.csv) | 287.47 | 69.71 | 14 | 4.12× |
-| [CC using DSU](benchmarks/results/cc/cc_chunked_generated.csv) | 73.80 | 18.51 | 16 | 3.99× |
-| [CC using Afforest](benchmarks/results/cc/cc_chunked_generated.csv) | 73.80 | 16.59 | 14 | 4.45× |
+| [CC using DSU](benchmarks/results/cc/cc_optimized_generated.csv) | 148.09 | 16.17 | 16 | 9.16× |
+| [CC using Afforest](benchmarks/results/cc/cc_optimized_generated.csv) | 148.09 | 17.21 | 14 | 8.61× |
 | [PageRank](benchmarks/results/pagerank/pagerank_all.csv) | 1,885.92 | 429.22 | 16 | 4.39× |
 
-Times are medians of five measured runs after warm-up, using the worker count with the lowest median. CC is compared with the faster sequential baseline, DSU.
+Times are medians of five measured runs after warm-up, using the worker count with the lowest median. CC is compared with the faster sequential baseline, DSU. Sequential DSU was unusually slow in the latest CC run (73.80 ms in the previous run), so the CC speedups are likely overstated.
 
-Afforest is slightly slower than parallel DSU on small, low-degree graphs, but is **1.94× faster at average degree 32** and **1.62× faster on a 16-million-vertex graph**. See the [CC results](https://legalunicorn.github.io/edgewise/cc/results) for all graphs, including the California roads and YouTube datasets, and raw measurements.
+Afforest is slightly slower than parallel DSU on low-degree graphs, but is **1.94× faster at average degree 32** and **1.44× faster on a 16-million-vertex graph**. See the [CC results](https://legalunicorn.github.io/edgewise/cc/results) for all graphs, including the California roads and YouTube datasets, and raw measurements.

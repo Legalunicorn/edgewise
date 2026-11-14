@@ -19,16 +19,16 @@ This page compares [parallel CC using concurrent DSU](/cc/parallel-dsu) with [Af
 
 | Graph | Vertices (M) | Edges (M) | Average degree | Sequential DSU | Parallel DSU | Afforest | Afforest vs DSU |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| Generated | 0.2 | 0.8 | 8 | 6.51 | 3.31 (10) | 3.90 (8) | 0.85× |
-| Generated | 0.5 | 2.0 | 8 | 18.98 | 6.29 (14) | 6.96 (14) | 0.90× |
-| Generated | 1.0 | 4.0 | 8 | 54.07 | 12.21 (14) | 11.74 (16) | 1.04× |
-| Generated | 1.5 | 6.0 | 8 | 73.80 | 18.51 (16) | 16.59 (14) | 1.12× |
-| [California roads](https://snap.stanford.edu/data/roadNet-CA.html) | 2.0 | 2.8 | 2.8 | 41.35 | 11.63 (14) | 14.00 (14) | 0.83× |
-| [YouTube](https://snap.stanford.edu/data/com-Youtube.html) | 1.1 | 3.0 | 5.3 | 30.98 | 9.14 (16) | 8.80 (10) | 1.04× |
-| Generated, high degree | 1.0 | 16.0 | 32 | 98.19 | 28.72 (16) | 14.80 (14) | **1.94×** |
-| Generated, large | 16.0 | 64.0 | 8 | 2,688.94 | 555.88 (16) | 343.24 (16) | **1.62×** |
+| Generated | 0.2 | 0.8 | 8 | 6.83 | 3.07 (10) | 3.82 (10) | 0.80× |
+| Generated | 0.5 | 2.0 | 8 | 20.11 | 5.81 (14) | 7.05 (14) | 0.82× |
+| Generated | 1.0 | 4.0 | 8 | 76.61 | 10.94 (16) | 11.91 (14) | 0.92× |
+| Generated | 1.5 | 6.0 | 8 | 148.09 | 16.17 (16) | 17.21 (14) | 0.94× |
+| [California roads](https://snap.stanford.edu/data/roadNet-CA.html) | 2.0 | 2.8 | 2.8 | 42.75 | 9.70 (16) | 10.36 (14) | 0.94× |
+| [YouTube](https://snap.stanford.edu/data/com-Youtube.html) | 1.1 | 3.0 | 5.3 | 30.52 | 6.91 (14) | 6.45 (10) | 1.07× |
+| Generated, high degree | 1.0 | 16.0 | 32 | 105.75 | 28.59 (16) | 14.77 (14) | **1.94×** |
+| Generated, large | 16.0 | 64.0 | 8 | 2,728.99 | 573.45 (16) | 397.07 (16) | **1.44×** |
 
-Sequential timings varied by up to about 25% between benchmark sessions, while parallel timings stayed close. Compare the parallel columns within a row rather than speedups across rows.
+Sequential timings vary more between benchmark sessions than parallel timings. In this run, sequential DSU on the 1.0M and 1.5M graphs was much slower than in earlier runs (54.07 and 73.80 ms), so compare the parallel columns within a row rather than speedups across rows.
 
 ## Speedup over sequential DSU
 
@@ -36,28 +36,26 @@ The same measurements as speedups over the sequential DSU baseline: sequential t
 
 | Graph | Vertices (M) | Edges (M) | Parallel DSU | Afforest |
 |---|---:|---:|---:|---:|
-| Generated | 0.2 | 0.8 | 1.97× | 1.67× |
-| Generated | 0.5 | 2.0 | 3.02× | 2.73× |
-| Generated | 1.0 | 4.0 | 4.43× | 4.61× |
-| Generated | 1.5 | 6.0 | 3.99× | 4.45× |
-| California roads | 2.0 | 2.8 | 3.56× | 2.95× |
-| YouTube | 1.1 | 3.0 | 3.39× | 3.52× |
-| Generated, high degree | 1.0 | 16.0 | 3.42× | **6.63×** |
-| Generated, large | 16.0 | 64.0 | 4.84× | **7.83×** |
+| Generated | 0.2 | 0.8 | 2.22× | 1.79× |
+| Generated | 0.5 | 2.0 | 3.46× | 2.85× |
+| Generated | 1.0 | 4.0 | 7.00× | 6.43× |
+| Generated | 1.5 | 6.0 | 9.16× | 8.61× |
+| California roads | 2.0 | 2.8 | 4.41× | 4.12× |
+| YouTube | 1.1 | 3.0 | 4.41× | 4.73× |
+| Generated, high degree | 1.0 | 16.0 | 3.70× | **7.16×** |
+| Generated, large | 16.0 | 64.0 | 4.76× | **6.87×** |
 
-These ratios depend on the sequential time, which varied more between sessions than the parallel times. Treat differences of a few tenths across rows as noise.
+These ratios depend on the sequential time, which varied more between sessions than the parallel times. The 1.0M and 1.5M rows are likely overstated, because their sequential times were unusually slow in this run.
 
 ## Findings
 
-1. **Afforest is slightly slower than parallel DSU on small or low-degree graphs**
-     - It's slower on California roads, where the two neighbour rounds already cover most edges and the extra passes cost time.
+1. **Afforest is slightly slower than parallel DSU on low-degree graphs**
+     - It's slower on the generated degree-8 graphs up to 1.5 million vertices and on California roads (0.80× to 0.94×), where the two neighbour rounds already cover most edges and the extra passes cost time. On YouTube it's slightly faster.
 2.  **Afforest beats DSU as the average degree grows.** 
-    - At degree 32, it's 1.94× faster than parallel DSU, which is itself 3.42× faster than sequential DSU. 
-    - **Afforest also pulls ahead on the largest graph.** With 16 million vertices it's 1.62× faster. The parent array takes 64 MB, more than my device's 16 MB L3 cache, so I suspect each union costs more there. I have not profiled this.
+    - At degree 32, it's 1.94× faster than parallel DSU, which is itself 3.70× faster than sequential DSU. 
+    - **Afforest also pulls ahead on the largest graph.** With 16 million vertices it's 1.44× faster. The parent array takes 64 MB, more than my device's 16 MB L3 cache, so I suspect each union costs more there. I have not profiled this.
 3. **Dynamic chunks matter for skewed graphs.** 
     - Before chunking, parallel DSU took 13.20 ms on YouTube, with chunks it cut down to 9.14 ms.
-
-The tables above were measured before the latest Afforest and concurrent DSU changes. The comparison below uses the current code.
 
 ## Comparison with GAP
 
@@ -72,8 +70,9 @@ Both programs ran on the same files in the same sitting. Times are medians of fi
 
 ## Raw measurements
 
-- [Generated graphs](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_generated.csv), [high degree](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_degree32.csv), [large](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_16m.csv)
-- [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_youtube.csv)
+- [Generated graphs](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_optimized_generated.csv), [high degree](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_optimized_degree32.csv), [large](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_optimized_16m.csv)
+- [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_optimized_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_optimized_youtube.csv)
+- Before the latest Afforest and concurrent DSU changes: [generated](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_generated.csv), [high degree](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_degree32.csv), [large](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_16m.csv), [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_youtube.csv)
 - Before parallel DSU used chunks: [generated](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_generated.csv), [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_youtube.csv)
 
 GAP comparison and before/after runs: [results/gap](https://github.com/Legalunicorn/edgewise/tree/main/benchmarks/results/gap).
