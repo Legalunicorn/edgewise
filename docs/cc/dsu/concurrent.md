@@ -72,6 +72,43 @@ The parent array uses `O(V)` space.
 
 See [Parallel CC using concurrent DSU](/cc/parallel-dsu) for how workers use this shared structure.
 
+### Relaxed initialisation
+
+The constructor uses `memory_order_relaxed` stores. The default `seq_cst` order forces each store to wait until it is visible to other cores, which is slow. No other thread exists yet, and creating a thread makes every earlier write visible to it, so the extra ordering is not needed.
+
+```cpp
+for (int i = 0; i < n; i++) parent[i].store(i, std::memory_order_relaxed);
+```
+
+### Without path compression
+
+[Afforest](/cc/afforest) compresses paths in its own phases, so it uses two variants that skip the CAS writes of `find`:
+
+- `find_no_compress` follows parents to the root and writes nothing.
+- `union_set_no_compress` is `union_set` using `find_no_compress`. Its only write is the CAS on the root.
+
+```cpp
+int find_no_compress(int v) {
+    while (true) {
+        const int p = parent[v].load();
+        if (p == v) return v;
+        v = p;
+    }
+}
+
+void union_set_no_compress(int a, int b) {
+    while (true) {
+        int rlow = find_no_compress(a);
+        int rhigh = find_no_compress(b);
+        if (rlow == rhigh) return;
+        if (rlow > rhigh) std::swap(rlow, rhigh);
+        if (parent[rhigh].compare_exchange_strong(rhigh, rlow)) return;
+    }
+}
+```
+
+The full implementation below includes both changes.
+
 ::: details Full implementation (reference)
 ```cpp
 #include <atomic>
@@ -83,7 +120,7 @@ struct ConcurrentDSU {
     std::vector<std::atomic<int>> parent;
 
     explicit ConcurrentDSU(int sz) : n(sz), parent(sz) {
-        for (int i = 0; i < n; i++) parent[i].store(i);
+        for (int i = 0; i < n; i++) parent[i].store(i, std::memory_order_relaxed);
     }
 
     int find(int v) {
@@ -114,6 +151,24 @@ struct ConcurrentDSU {
             if (rlow == rhigh) return;
             if (rlow > rhigh) std::swap(rlow, rhigh);
             // attach  the larger root only if it is still a root.
+            if (parent[rhigh].compare_exchange_strong(rhigh, rlow)) return;
+        }
+    }
+
+    int find_no_compress(int v) {
+        while (true) {
+            const int p = parent[v].load();
+            if (p == v) return v;
+            v = p;
+        }
+    }
+
+    void union_set_no_compress(int a, int b) {
+        while (true) {
+            int rlow = find_no_compress(a);
+            int rhigh = find_no_compress(b);
+            if (rlow == rhigh) return;
+            if (rlow > rhigh) std::swap(rlow, rhigh);
             if (parent[rhigh].compare_exchange_strong(rhigh, rlow)) return;
         }
     }

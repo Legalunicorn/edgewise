@@ -1,0 +1,110 @@
+threads 1
+Read Time:           1.07368
+Build Time:          0.13093
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.01881
+Trial Time:          0.01697
+Trial Time:          0.01727
+Trial Time:          0.01616
+Trial Time:          0.01547
+Trial Time:          0.01596
+Average Time:        0.01677
+threads 2
+Read Time:           1.15632
+Build Time:          0.06992
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00850
+Trial Time:          0.00820
+Trial Time:          0.00832
+Trial Time:          0.00872
+Trial Time:          0.00796
+Trial Time:          0.00851
+Average Time:        0.00837
+threads 3
+Read Time:           1.09045
+Build Time:          0.05886
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00666
+Trial Time:          0.00523
+Trial Time:          0.00537
+Trial Time:          0.00579
+Trial Time:          0.00568
+Trial Time:          0.00523
+Average Time:        0.00566
+threads 4
+Read Time:           1.06916
+Build Time:          0.04219
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00432
+Trial Time:          0.00444
+Trial Time:          0.00444
+Trial Time:          0.00405
+Trial Time:          0.00410
+Trial Time:          0.00489
+Average Time:        0.00437
+threads 6
+Read Time:           1.04675
+Build Time:          0.03397
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00319
+Trial Time:          0.00295
+Trial Time:          0.00360
+Trial Time:          0.00355
+Trial Time:          0.00354
+Trial Time:          0.00363
+Average Time:        0.00341
+threads 8
+Read Time:           1.08584
+Build Time:          0.03340
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00312
+Trial Time:          0.00296
+Trial Time:          0.00317
+Trial Time:          0.00296
+Trial Time:          0.00341
+Trial Time:          0.00334
+Average Time:        0.00316
+threads 10
+Read Time:           1.05638
+Build Time:          0.02691
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00318
+Trial Time:          0.00293
+Trial Time:          0.00301
+Trial Time:          0.00291
+Trial Time:          0.00291
+Trial Time:          0.00337
+Average Time:        0.00305
+threads 12
+Read Time:           1.04880
+Build Time:          0.02765
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00327
+Trial Time:          0.00290
+Trial Time:          0.00306
+Trial Time:          0.00314
+Trial Time:          0.00307
+Trial Time:          0.00285
+Average Time:        0.00305
+threads 14
+Read Time:           1.06008
+Build Time:          0.02621
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00304
+Trial Time:          0.00313
+Trial Time:          0.00303
+Trial Time:          0.00277
+Trial Time:          0.00334
+Trial Time:          0.00273
+Average Time:        0.00301
+threads 16
+Read Time:           1.07415
+Build Time:          0.02517
+Graph has 1157828 nodes and 2987624 undirected edges for degree: 2
+Trial Time:          0.00412
+Trial Time:          0.00259
+Trial Time:          0.00325
+Trial Time:          0.00320
+Trial Time:          0.00351
+Trial Time:          0.00352
+Average Time:        0.00336

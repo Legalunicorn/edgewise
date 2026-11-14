@@ -11,7 +11,7 @@ public:
     int n; 
     std::vector<std::atomic<int>> parent;
     explicit ConcurrentDSU(int sz) : n(sz), parent(sz) {
-        for (int i  = 0; i < n; i++) parent[i].store(i);
+        for (int i  = 0; i < n; i++) parent[i].store(i, std::memory_order_relaxed);
     }
 
     int find(int v){
@@ -34,6 +34,26 @@ public:
             v = p;
         }
         return root;
+    }
+
+    // read only find 
+    int find_no_compress(int v){
+        while(true){
+            const int p = parent[v].load();
+            if (p == v) return v;
+            v = p;
+        }
+    }
+    // union without path compression
+    void union_set_no_compress(int a, int b){
+        while(true){
+            int pa = find_no_compress(a);
+            int pb = find_no_compress(b);
+            if (pa == pb) return;
+            if (pa > pb) std::swap(pa,pb);
+            // only write here
+            if (parent[pb].compare_exchange_strong(pb,pa)) return;
+        }
     }
 
     void union_set(int a, int b){
