@@ -36,12 +36,13 @@ All phases share one `ConcurrentDSU`. Workers wait at a barrier after each phase
 | Phase | Work |
 |---|---|
 | 1. Round 0 | Each worker links its vertices with their first neighbour. |
-| 2. Compress | Each worker calls `find` on its vertices. |
+| 2. Compress | Each worker points its vertices straight at their root. |
 | 3. Round 1 | Each worker links its vertices with their second neighbour. |
 | 4. Compress | Same as phase 2. |
 | 5. Sample | The main thread samples 1024 random vertices and picks the most common label `c`. |
 | 6. Finish | Workers link the remaining neighbours of every vertex not in `c`. |
-| 7. Labels | Each worker writes `find(v)` for its vertices into the result. |
+| 7. Labels | Each worker writes the root of its vertices into the result. |
+
 
 ## Implementation
 
@@ -56,12 +57,24 @@ void link_round(const Graph& g, ConcurrentDSU& dsu, std::size_t r,
                 std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
         if (g.outdegree(u) <= r) continue;
-        dsu.union_set(u, g.neighbours(u)[r]);
+        dsu.union_set_no_compress(u, g.neighbours(u)[r]);
     }
 }
 ```
 
-`union_set` is the same CAS-based union from the concurrent DSU. Compress is a loop that calls `dsu.find(u)`, since `find` already rewrites parents to point at the root. `fill_results` is the same loop, but stores each `find(u)` in the result vector.
+`union_set_no_compress` is the concurrent DSU's union without path compression, since the compress phases shorten paths anyway. See [without path compression](/cc/dsu/concurrent#without-path-compression).
+
+Compress points each vertex straight at its root with one relaxed store. No links happen between the barriers around it, so each worker only writes its own vertices.
+
+```cpp
+void compress(ConcurrentDSU& dsu, std::size_t start, std::size_t end) {
+    for (std::size_t u = start; u < end; u++) {
+        dsu.parent[u].store(dsu.find_no_compress(u), std::memory_order_relaxed);
+    }
+}
+```
+
+`fill_results` is the same loop, but stores each `find_no_compress(u)` in the result vector.
 
 #### 2. Sample the largest component
 
@@ -105,7 +118,7 @@ void link_remaining(const Graph& g, ConcurrentDSU& dsu,
         // skip vertices already in c
         if (dsu.parent[u].load() == c) continue;
         for (int v : g.neighbours(u).subspan(NEIGHBOUR_ROUNDS)) {
-            dsu.union_set(u, v);
+            dsu.union_set_no_compress(u, v);
         }
     }
 }
@@ -208,14 +221,14 @@ void link_round(const Graph& g, ConcurrentDSU& dsu, std::size_t r,
                 std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
         if (g.outdegree(u) <= r) continue;
-        dsu.union_set(u, g.neighbours(u)[r]);
+        dsu.union_set_no_compress(u, g.neighbours(u)[r]);
     }
 }
 
 // point every vertex in [start, end) straight at its root
 void compress(ConcurrentDSU& dsu, std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
-        dsu.find(u);
+        dsu.parent[u].store(dsu.find_no_compress(u), std::memory_order_relaxed);
     }
 }
 
@@ -223,7 +236,7 @@ void compress(ConcurrentDSU& dsu, std::size_t start, std::size_t end) {
 void fill_results(std::vector<int>& component, ConcurrentDSU& dsu,
                   std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
-        component[u] = dsu.find(u);
+        component[u] = dsu.find_no_compress(u);
     }
 }
 
@@ -256,7 +269,7 @@ void link_remaining(const Graph& g, ConcurrentDSU& dsu,
         // skip vertices already in c
         if (dsu.parent[u].load() == c) continue;
         for (int v : g.neighbours(u).subspan(NEIGHBOUR_ROUNDS)) {
-            dsu.union_set(u, v);
+            dsu.union_set_no_compress(u, v);
         }
     }
 }
@@ -338,6 +351,6 @@ std::vector<int> Graph::cc_parallel_afforest(std::size_t worker_count) const {
 Afforest saves edge work, but adds a few extra passes over all vertices. It pulls ahead when there is a lot of edge work to skip:
 
 - **Higher average degree.** Two rounds read two neighbours per vertex. The rest of each list is skipped for vertices in the large component.
-- **Larger graphs.** On 16 million vertices it was 1.62× faster. Its 64 MB parent array no longer fits in the 16 MB L3 cache, so each union probably costs more and skipping saves more, but I have not profiled this.
+- **Larger graphs.** It was faster on 16 million vertices. Its 64 MB parent array no longer fits in the 16 MB L3 cache, so each union probably costs more and skipping saves more, but I have not profiled this.
 
-On small graphs and on low-degree graphs such as California roads, it is slightly slower than parallel DSU (0.83× to 0.90× in the results). See the [CC results](/cc/results) for the measurements.
+On low-degree graphs such as California roads, it is slightly slower than parallel DSU. See the [CC results](/cc/results) for the measurements.

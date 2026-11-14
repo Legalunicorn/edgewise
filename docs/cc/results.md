@@ -57,11 +57,26 @@ These ratios depend on the sequential time, which varied more between sessions t
 3. **Dynamic chunks matter for skewed graphs.** 
     - Before chunking, parallel DSU took 13.20 ms on YouTube, with chunks it cut down to 9.14 ms.
 
+The tables above were measured before the latest Afforest and concurrent DSU changes. The comparison below uses the current code.
+
+## Comparison with GAP
+
+[GAP](https://github.com/sbeamer/gapbs) is a reference benchmark suite whose CC kernel is also Afforest. **GAP uses [OpenMP](https://www.openmp.org/)**, which creates its threads once and schedules chunks of 16,384 vertices. Edgewise uses `std::jthread`, `std::barrier` and its own chunk counter, and creates its threads inside each timed call.
+
+Both programs ran on the same files in the same sitting. Times are medians of five runs at the best thread count.
+
+| Graph | Edgewise Afforest | GAP Afforest | GAP faster by |
+|---|---:|---:|---:|
+| YouTube | 6.31 ms (8) | 2.93 ms (10) | 2.15× |
+| California roads | 9.86 ms (12) | 6.48 ms (12) | 1.52× |
+
 ## Raw measurements
 
 - [Generated graphs](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_generated.csv), [high degree](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_degree32.csv), [large](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_16m.csv)
 - [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_chunked_youtube.csv)
 - Before parallel DSU used chunks: [generated](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_generated.csv), [California roads](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_road_ca.csv), [YouTube](https://github.com/Legalunicorn/edgewise/blob/main/benchmarks/results/cc/cc_afforest_youtube.csv)
+
+GAP comparison and before/after runs: [results/gap](https://github.com/Legalunicorn/edgewise/tree/main/benchmarks/results/gap).
 
 Older measurements from before Afforest are in the [results folder](https://github.com/Legalunicorn/edgewise/tree/main/benchmarks/results/cc).
 
