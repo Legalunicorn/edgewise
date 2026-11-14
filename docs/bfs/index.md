@@ -11,6 +11,10 @@ I started with a simple sequential implementation, then made parallel iterations
 
 A **frontier** is one BFS distance layer. Vertices within that layer can be processed concurrently, but the next layer must be completed before it is expanded.
 
+## Parallel BFS
+
+The parallel versions split each frontier among workers. Workers scan their part at the same time, then wait for each other before the next frontier starts.
+
 ![Animation of parallel BFS with four workers expanding ring by ring from a source vertex](/animations/parallel-bfs-radial.svg)
 
 The animation shows V3 on a generated graph, with each ring being one frontier. The frontier is split into four contiguous slices, one per worker, and each colour marks the worker responsible for a vertex. 
