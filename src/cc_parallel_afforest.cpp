@@ -21,14 +21,14 @@ void link_round(const Graph& g, ConcurrentDSU& dsu, std::size_t r,
                 std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
         if (g.outdegree(u) <= r) continue;
-        dsu.union_set(u, g.neighbours(u)[r]);
+        dsu.union_set_no_compress(u, g.neighbours(u)[r]);
     }
 }
 
 // point every vertex in [start, end) straight at its root
 void compress(ConcurrentDSU& dsu, std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
-        dsu.find(u);
+        dsu.parent[u].store(dsu.find_no_compress(u), std::memory_order_relaxed);
     }
 }
 
@@ -36,7 +36,7 @@ void compress(ConcurrentDSU& dsu, std::size_t start, std::size_t end) {
 void fill_results(std::vector<int>& component, ConcurrentDSU& dsu,
                   std::size_t start, std::size_t end) {
     for (std::size_t u = start; u < end; u++) {
-        component[u] = dsu.find(u);
+        component[u] = dsu.find_no_compress(u);
     }
 }
 
@@ -69,7 +69,7 @@ void link_remaining(const Graph& g, ConcurrentDSU& dsu,
         // skip vertices already in c
         if (dsu.parent[u].load() == c) continue;
         for (int v : g.neighbours(u).subspan(NEIGHBOUR_ROUNDS)) {
-            dsu.union_set(u, v);
+            dsu.union_set_no_compress(u, v);
         }
     }
 }
