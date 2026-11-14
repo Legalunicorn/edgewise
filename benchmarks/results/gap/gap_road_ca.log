@@ -1,110 +1,110 @@
 threads 1
-Read Time:           4.63955
-Build Time:          0.31261
+Read Time:           2.34400
+Build Time:          0.17536
 Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.07236
-Trial Time:          0.06951
-Trial Time:          0.07570
-Trial Time:          0.07092
-Trial Time:          0.07467
-Trial Time:          0.07624
-Average Time:        0.07323
+Trial Time:          0.04084
+Trial Time:          0.04207
+Trial Time:          0.04144
+Trial Time:          0.04114
+Trial Time:          0.04135
+Trial Time:          0.04161
+Average Time:        0.04141
 threads 2
-Read Time:           4.34773
-Build Time:          0.16991
+Read Time:           2.29592
+Build Time:          0.08951
 Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.04183
-Trial Time:          0.04524
-Trial Time:          0.04134
-Trial Time:          0.04333
-Trial Time:          0.04365
-Trial Time:          0.04479
-Average Time:        0.04336
+Trial Time:          0.02409
+Trial Time:          0.02409
+Trial Time:          0.02347
+Trial Time:          0.02348
+Trial Time:          0.02382
+Trial Time:          0.02335
+Average Time:        0.02371
 threads 3
-Read Time:           4.36009
-Build Time:          0.12257
+Read Time:           2.27516
+Build Time:          0.06325
 Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.02783
-Trial Time:          0.02720
-Trial Time:          0.02985
-Trial Time:          0.02864
-Trial Time:          0.02816
-Trial Time:          0.02926
-Average Time:        0.02849
-threads 4
-Read Time:           4.53268
-Build Time:          0.10044
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.02416
-Trial Time:          0.02477
-Trial Time:          0.02440
-Trial Time:          0.02691
-Trial Time:          0.02664
-Trial Time:          0.02643
-Average Time:        0.02555
-threads 6
-Read Time:           4.34921
-Build Time:          0.08878
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.01992
-Trial Time:          0.01983
-Trial Time:          0.02061
-Trial Time:          0.01941
-Trial Time:          0.01988
-Trial Time:          0.02127
-Average Time:        0.02015
-threads 8
-Read Time:           4.23761
-Build Time:          0.07645
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.01702
-Trial Time:          0.01765
-Trial Time:          0.01803
-Trial Time:          0.02250
-Trial Time:          0.02275
-Trial Time:          0.02056
-Average Time:        0.01976
-threads 10
-Read Time:           5.99573
-Build Time:          0.12830
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.02073
-Trial Time:          0.01912
-Trial Time:          0.01924
-Trial Time:          0.01915
-Trial Time:          0.01940
-Trial Time:          0.01800
-Average Time:        0.01927
-threads 12
-Read Time:           4.40324
-Build Time:          0.08967
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.03472
-Trial Time:          0.02169
-Trial Time:          0.02091
-Trial Time:          0.01986
-Trial Time:          0.01952
-Trial Time:          0.02063
-Average Time:        0.02289
-threads 14
-Read Time:           4.85133
-Build Time:          0.10073
-Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.01985
-Trial Time:          0.02044
-Trial Time:          0.01870
-Trial Time:          0.01899
 Trial Time:          0.01683
-Trial Time:          0.01719
-Average Time:        0.01867
-threads 16
-Read Time:           4.46380
-Build Time:          0.10784
+Trial Time:          0.01664
+Trial Time:          0.01621
+Trial Time:          0.01616
+Trial Time:          0.01655
+Trial Time:          0.01704
+Average Time:        0.01657
+threads 4
+Read Time:           2.29906
+Build Time:          0.05256
 Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
-Trial Time:          0.02408
-Trial Time:          0.02147
-Trial Time:          0.02171
-Trial Time:          0.02265
-Trial Time:          0.02137
-Trial Time:          0.02303
-Average Time:        0.02238
+Trial Time:          0.01323
+Trial Time:          0.01698
+Trial Time:          0.01544
+Trial Time:          0.01347
+Trial Time:          0.01457
+Trial Time:          0.01635
+Average Time:        0.01501
+threads 6
+Read Time:           2.25061
+Build Time:          0.03985
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.01093
+Trial Time:          0.01081
+Trial Time:          0.01082
+Trial Time:          0.01129
+Trial Time:          0.01137
+Trial Time:          0.01093
+Average Time:        0.01103
+threads 8
+Read Time:           2.30597
+Build Time:          0.03618
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.00935
+Trial Time:          0.00912
+Trial Time:          0.00864
+Trial Time:          0.00818
+Trial Time:          0.00848
+Trial Time:          0.00839
+Average Time:        0.00869
+threads 10
+Read Time:           1.90282
+Build Time:          0.03271
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.00826
+Trial Time:          0.00756
+Trial Time:          0.00723
+Trial Time:          0.00727
+Trial Time:          0.00712
+Trial Time:          0.00713
+Average Time:        0.00743
+threads 12
+Read Time:           2.29395
+Build Time:          0.03123
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.00708
+Trial Time:          0.00635
+Trial Time:          0.00689
+Trial Time:          0.00648
+Trial Time:          0.00645
+Trial Time:          0.00690
+Average Time:        0.00669
+threads 14
+Read Time:           2.33028
+Build Time:          0.03480
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.00765
+Trial Time:          0.00684
+Trial Time:          0.00671
+Trial Time:          0.00696
+Trial Time:          0.00642
+Trial Time:          0.00735
+Average Time:        0.00699
+threads 16
+Read Time:           2.40652
+Build Time:          0.02967
+Graph has 1971281 nodes and 2766607 undirected edges for degree: 1
+Trial Time:          0.00637
+Trial Time:          0.00631
+Trial Time:          0.00656
+Trial Time:          0.00714
+Trial Time:          0.00672
+Trial Time:          0.00588
+Average Time:        0.00650
